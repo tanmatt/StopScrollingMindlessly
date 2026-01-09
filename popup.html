@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StopScrollingMindlessly</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        </svg>
+        <h1>StopScrollingMindlessly</h1>
+      </div>
+      <span class="badge free" id="premiumBadge">FREE</span>
+    </header>
+
+    <div class="section">
+      <h2>📝 Your TODOs</h2>
+      <div class="todo-list" id="todoList"></div>
+      <form class="todo-form" id="todoForm">
+        <input type="text" id="todoInput" placeholder="Add a new task..." maxlength="100">
+        <select id="prioritySelect">
+          <option value="low">🟢 Low</option>
+          <option value="medium" selected>🟡 Medium</option>
+          <option value="high">🔴 High</option>
+        </select>
+        <button type="submit">Add</button>
+      </form>
+      <p class="limit-note" id="todoLimitNote">Free users: max 5 todos. <a href="#" id="upgradeLink">Upgrade for unlimited!</a></p>
+    </div>
+
+    <div class="section">
+      <h2>💡 Productivity Tip</h2>
+      <div class="tip-card" id="tipCard">
+        <p id="tipText">Loading tip...</p>
+        <button class="refresh-tip" id="refreshTip">New Tip</button>
+      </div>
+    </div>
+
+    <div class="premium-cta" id="premiumCTA">
+      <h3>🚀 Upgrade to Premium</h3>
+      <ul>
+        <li>✅ Unlimited TODOs</li>
+        <li>✅ No advertisements</li>
+        <li>✅ Priority levels</li>
+        <li>✅ Dark mode</li>
+      </ul>
+      <button class="premium-btn" id="upgradeBtn">Get Premium - $2.99/month</button>
+    </div>
+
+    <footer class="footer">
+      <a href="#" id="settingsLink">⚙️ Settings</a>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

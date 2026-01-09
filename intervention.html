@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stop Scrolling Mindlessly!</title>
+  <link rel="stylesheet" href="intervention.css">
+</head>
+<body>
+  <div class="intervention-overlay" id="overlay">
+    <div class="intervention-modal">
+      <div class="intervention-header">
+        <div class="warning-icon">⚠️</div>
+        <h1>Stop scrolling mindlessly!</h1>
+        <p class="subtitle">Here are your top TODOs</p>
+      </div>
+
+      <div class="todos-section">
+        <div class="todo-list" id="todoList"></div>
+        <div class="add-todo-form" id="addTodoForm">
+          <input type="text" id="todoInput" placeholder="Add a quick task..." maxlength="80">
+          <button type="button" id="addTodoBtn">+</button>
+        </div>
+      </div>
+
+      <div class="tip-section">
+        <div class="tip-header">
+          <span>💡</span>
+          <span>Productivity Tip</span>
+        </div>
+        <p id="tipText">Loading...</p>
+      </div>
+
+      <div class="ad-section" id="adSection">
+        <div class="ad-content">
+          <span class="ad-label">Sponsored</span>
+          <p>Try Premium for an ad-free experience!</p>
+          <button class="upgrade-btn" id="upgradeBtn">Upgrade Now</button>
+        </div>
+      </div>
+
+      <div class="intervention-footer">
+        <button class="btn-secondary" id="dismissBtn">Dismiss & Continue</button>
+        <button class="btn-primary" id="closeBtn">Back to Work</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="intervention.js"></script>
+</body>
+</html>

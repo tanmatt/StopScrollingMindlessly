@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StopScrollingMindlessly - Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        </svg>
+        <h1>Settings</h1>
+      </div>
+      <span class="badge free" id="premiumBadge">FREE</span>
+    </header>
+
+    <!-- Scroll Sensitivity Section -->
+    <section class="settings-section">
+      <h2>🎛️ Scroll Sensitivity</h2>
+      <p class="section-description">Configure when the intervention popup appears</p>
+      
+      <div class="setting-row">
+        <label for="scrollThreshold">Scrolls before popup:</label>
+        <div class="setting-control">
+          <input type="range" id="scrollThreshold" min="5" max="30" value="10">
+          <span id="scrollThresholdValue">10</span>
+        </div>
+      </div>
+      
+      <div class="setting-row">
+        <label for="timeWindow">Time window (seconds):</label>
+        <div class="setting-control">
+          <input type="range" id="timeWindow" min="10" max="120" value="30">
+          <span id="timeWindowValue">30</span>
+        </div>
+      </div>
+      
+      <p class="setting-note">The popup will appear when you scroll more than <strong id="sensitivityNote">10</strong> times within <strong id="timeNote">30</strong> seconds.</p>
+    </section>
+
+    <!-- Domain Ignore List Section -->
+    <section class="settings-section">
+      <h2>🚫 Domain Ignore List</h2>
+      <p class="section-description">The extension won't trigger on these websites</p>
+      
+      <div class="add-domain-form">
+        <input type="text" id="domainInput" placeholder="e.g., youtube.com, twitter.com">
+        <button type="button" id="addDomainBtn">Add</button>
+      </div>
+      
+      <div class="domain-list" id="domainList"></div>
+      
+      <p class="setting-note">Add domains where you want to disable the extension completely. The extension will not detect scrolling or show popups on these sites.</p>
+    </section>
+
+    <!-- Premium Section -->
+    <section class="settings-section premium-section" id="premiumSection">
+      <h2>🚀 Premium Features</h2>
+      <p class="section-description">Unlock the full experience</p>
+      
+      <div class="premium-features">
+        <div class="feature">
+          <span class="feature-icon">✅</span>
+          <span>Unlimited TODOs</span>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">🚫</span>
+          <span>No advertisements</span>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">🎨</span>
+          <span>Dark mode</span>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">📊</span>
+          <span>Priority levels</span>
+        </div>
+      </div>
+      
+      <button class="premium-btn" id="upgradeBtn">Upgrade to Premium - $2.99/month</button>
+    </section>
+
+    <!-- Current Plan Section (for premium users) -->
+    <section class="settings-section premium-active" id="premiumActiveSection" style="display: none;">
+      <div class="premium-badge">
+        <span class="badge-icon">⭐</span>
+        <span>You are a Premium member!</span>
+      </div>
+      <button class="premium-btn" id="manageBtn">Manage Subscription</button>
+    </section>
+
+    <footer class="footer">
+      <p>StopScrollingMindlessly v1.0.0</p>
+      <a href="#" id="resetSettings">Reset to defaults</a>
+    </footer>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

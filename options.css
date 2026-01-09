@@ -1,0 +1,368 @@
+/* StopScrollingMindlessly Options/Settings Styles */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  background: #f5f5f5;
+  min-width: 500px;
+  padding: 20px;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #f0f0f0;
+  margin-bottom: 24px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo svg {
+  color: #667eea;
+}
+
+.logo h1 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.badge {
+  padding: 6px 14px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge.free {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.badge.premium {
+  background: linear-gradient(135deg, #ffd700, #ffaa00);
+  color: #333;
+}
+
+/* Settings Sections */
+.settings-section {
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.settings-section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 20px;
+}
+
+.settings-section h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.section-description {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 16px;
+}
+
+/* Setting Rows */
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.setting-row label {
+  font-size: 14px;
+  color: #555;
+  font-weight: 500;
+}
+
+.setting-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.setting-control input[type="range"] {
+  width: 150px;
+  height: 6px;
+  -webkit-appearance: none;
+  background: #e0e0e0;
+  border-radius: 3px;
+  outline: none;
+}
+
+.setting-control input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  background: #667eea;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.setting-control input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+.setting-control span {
+  min-width: 30px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #667eea;
+}
+
+.setting-note {
+  font-size: 12px;
+  color: #888;
+  background: #f8f9fa;
+  padding: 10px 12px;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
+.setting-note strong {
+  color: #667eea;
+}
+
+/* Domain Ignore List */
+.add-domain-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.add-domain-form input {
+  flex: 1;
+  padding: 12px 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.add-domain-form input:focus {
+  border-color: #667eea;
+}
+
+.add-domain-form button {
+  padding: 12px 20px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.add-domain-form button:hover {
+  background: #5a6fd6;
+}
+
+.domain-list {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.domain-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.2s;
+}
+
+.domain-item:last-child {
+  border-bottom: none;
+}
+
+.domain-item:hover {
+  background: #f8f9fa;
+}
+
+.domain-name {
+  font-size: 14px;
+  color: #333;
+}
+
+.domain-remove {
+  background: none;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.domain-remove:hover {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.domain-empty {
+  padding: 20px;
+  text-align: center;
+  color: #999;
+  font-size: 13px;
+}
+
+/* Premium Section */
+.premium-section {
+  background: linear-gradient(135deg, #fff8e1, #ffecb3);
+  margin: 0 -24px;
+  padding: 24px !important;
+  border-radius: 0 0 12px 12px;
+  border-bottom: none !important;
+}
+
+.premium-section h2 {
+  color: #f57f17;
+}
+
+.premium-features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #555;
+}
+
+.feature-icon {
+  font-size: 16px;
+}
+
+.premium-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #ffd700, #ffaa00);
+  color: #333;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.premium-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 170, 0, 0.3);
+}
+
+/* Premium Active Section */
+.premium-active {
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  margin: 0 -24px;
+  padding: 24px !important;
+  border-radius: 0 0 12px 12px;
+  text-align: center;
+}
+
+.premium-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2e7d32;
+  margin-bottom: 16px;
+}
+
+.badge-icon {
+  font-size: 24px;
+}
+
+.premium-active .premium-btn {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer p {
+  font-size: 12px;
+  color: #999;
+}
+
+.footer a {
+  font-size: 13px;
+  color: #667eea;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+/* Scrollbar */
+.domain-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.domain-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.domain-list::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 3px;
+}
+
+.domain-list::-webkit-scrollbar-thumb:hover {
+  background: #ccc;
+}
