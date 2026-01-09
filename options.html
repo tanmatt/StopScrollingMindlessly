@@ -18,34 +18,63 @@
       <span class="badge free" id="premiumBadge">FREE</span>
     </header>
 
+    <!-- Welcome/Setup Section (shown on first load) -->
+    <section class="settings-section setup-section" id="setupSection" style="display: none;">
+      <h2>👋 Welcome! Let's set up your sensitivity</h2>
+      <p class="section-description">Choose how sensitive the scroll detection should be</p>
+      
+      <div class="setup-options">
+        <div class="setup-option" data-sensitivity="low">
+          <div class="setup-icon">🧘</div>
+          <h3>Relaxed</h3>
+          <p>30 scrolls in 60 seconds</p>
+          <span class="setup-badge">Least interruptions</span>
+        </div>
+        <div class="setup-option active" data-sensitivity="medium">
+          <div class="setup-icon">⚖️</div>
+          <h3>Balanced</h3>
+          <p>20 scrolls in 45 seconds</p>
+          <span class="setup-badge">Recommended</span>
+        </div>
+        <div class="setup-option" data-sensitivity="high">
+          <div class="setup-icon">🎯</div>
+          <h3>Strict</h3>
+          <p>10 scrolls in 20 seconds</p>
+          <span class="setup-badge">More reminders</span>
+        </div>
+      </div>
+      
+      <button class="premium-btn" id="saveSetupBtn">Save & Continue</button>
+    </section>
+
     <!-- Scroll Sensitivity Section -->
-    <section class="settings-section">
+    <section class="settings-section" id="sensitivitySection">
       <h2>🎛️ Scroll Sensitivity</h2>
       <p class="section-description">Configure when the intervention popup appears</p>
       
       <div class="setting-row">
         <label for="scrollThreshold">Scrolls before popup:</label>
         <div class="setting-control">
-          <input type="range" id="scrollThreshold" min="5" max="30" value="10">
-          <span id="scrollThresholdValue">10</span>
+          <input type="range" id="scrollThreshold" min="10" max="40" value="20">
+          <span id="scrollThresholdValue">20</span>
         </div>
       </div>
       
       <div class="setting-row">
         <label for="timeWindow">Time window (seconds):</label>
         <div class="setting-control">
-          <input type="range" id="timeWindow" min="10" max="120" value="30">
-          <span id="timeWindowValue">30</span>
+          <input type="range" id="timeWindow" min="20" max="90" value="45">
+          <span id="timeWindowValue">45</span>
         </div>
       </div>
       
-      <p class="setting-note">The popup will appear when you scroll more than <strong id="sensitivityNote">10</strong> times within <strong id="timeNote">30</strong> seconds.</p>
+      <p class="setting-note">The popup will appear when you scroll more than <strong id="sensitivityNote">20</strong> times within <strong id="timeNote">45</strong> seconds.</p>
     </section>
 
     <!-- Domain Ignore List Section -->
-    <section class="settings-section">
-      <h2>🚫 Domain Ignore List</h2>
-      <p class="section-description">The extension won't trigger on these websites</p>
+    <section class="settings-section domain-section" id="domainSection">
+      <h2>🚫 Ignore These Websites</h2>
+      <p class="section-description">The extension won't bother you on these sites</p>
       
       <div class="add-domain-form">
         <input type="text" id="domainInput" placeholder="e.g., youtube.com, twitter.com">
@@ -54,7 +83,7 @@
       
       <div class="domain-list" id="domainList"></div>
       
-      <p class="setting-note">Add domains where you want to disable the extension completely. The extension will not detect scrolling or show popups on these sites.</p>
+      <p class="setting-note">Add domains where you want to disable the extension completely. Perfect for work sites or when you need focused scrolling!</p>
     </section>
 
     <!-- Premium Section -->
@@ -94,7 +123,7 @@
     </section>
 
     <footer class="footer">
-      <p>StopScrollingMindlessly v1.0.0</p>
+      <p>StopScrollingMindlessly v1.1.0</p>
       <a href="#" id="resetSettings">Reset to defaults</a>
     </footer>
   </div>

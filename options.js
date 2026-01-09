@@ -1,10 +1,11 @@
 // Options/Settings Script for StopScrollingMindlessly
 
 let settings = {
-  scrollThreshold: 10,
-  timeWindowSeconds: 30,
+  scrollThreshold: 20,
+  timeWindowSeconds: 45,
   isPremium: false,
-  ignoredDomains: []
+  ignoredDomains: [],
+  hasCompletedSetup: false
 };
 
 // DOM Elements
@@ -23,14 +24,33 @@ const premiumActiveSection = document.getElementById('premiumActiveSection');
 const upgradeBtn = document.getElementById('upgradeBtn');
 const manageBtn = document.getElementById('manageBtn');
 const resetSettings = document.getElementById('resetSettings');
+const setupSection = document.getElementById('setupSection');
+const sensitivitySection = document.getElementById('sensitivitySection');
+const domainSection = document.getElementById('domainSection');
+const saveSetupBtn = document.getElementById('saveSetupBtn');
+let selectedSensitivity = 'medium';
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
   await loadSettings();
+  checkSetupRequired();
   updateUI();
   renderDomainList();
   setupEventListeners();
 });
+
+// Check if first-time setup is needed
+function checkSetupRequired() {
+  if (!settings.hasCompletedSetup) {
+    setupSection.style.display = 'block';
+    sensitivitySection.style.display = 'none';
+    domainSection.style.display = 'none';
+  } else {
+    setupSection.style.display = 'none';
+    sensitivitySection.style.display = 'block';
+    domainSection.style.display = 'block';
+  }
+}
 
 // Setup event listeners
 function setupEventListeners() {
@@ -43,16 +63,73 @@ function setupEventListeners() {
   upgradeBtn.addEventListener('click', handleUpgrade);
   manageBtn.addEventListener('click', handleManageSubscription);
   resetSettings.addEventListener('click', handleResetSettings);
+  
+  // Setup wizard listeners
+  document.querySelectorAll('.setup-option').forEach(option => {
+    option.addEventListener('click', () => {
+      document.querySelectorAll('.setup-option').forEach(o => o.classList.remove('active'));
+      option.classList.add('active');
+      selectedSensitivity = option.dataset.sensitivity;
+    });
+  });
+  
+  if (saveSetupBtn) {
+    saveSetupBtn.addEventListener('click', saveSetup);
+  }
+}
+
+// Save setup and close wizard
+async function saveSetup() {
+  // Apply selected sensitivity
+  switch (selectedSensitivity) {
+    case 'low':
+      settings.scrollThreshold = 30;
+      settings.timeWindowSeconds = 60;
+      break;
+    case 'medium':
+      settings.scrollThreshold = 20;
+      settings.timeWindowSeconds = 45;
+      break;
+    case 'high':
+      settings.scrollThreshold = 10;
+      settings.timeWindowSeconds = 20;
+      break;
+  }
+  
+  settings.hasCompletedSetup = true;
+  
+  await chrome.storage.local.set({
+    scrollThreshold: settings.scrollThreshold,
+    timeWindowSeconds: settings.timeWindowSeconds,
+    hasCompletedSetup: true
+  });
+  
+  // Notify content scripts
+  chrome.runtime.sendMessage({
+    type: "SETTINGS_UPDATED",
+    settings: {
+      scrollThreshold: settings.scrollThreshold,
+      timeWindowSeconds: settings.timeWindowSeconds
+    }
+  });
+  
+  // Hide setup, show main settings
+  setupSection.style.display = 'none';
+  sensitivitySection.style.display = 'block';
+  domainSection.style.display = 'block';
+  
+  updateUI();
 }
 
 // Load settings from Chrome storage
 async function loadSettings() {
   return new Promise((resolve) => {
-    chrome.storage.local.get(['scrollThreshold', 'timeWindowSeconds', 'isPremium', 'ignoredDomains'], (result) => {
-      settings.scrollThreshold = result.scrollThreshold || 10;
-      settings.timeWindowSeconds = result.timeWindowSeconds || 30;
+    chrome.storage.local.get(['scrollThreshold', 'timeWindowSeconds', 'isPremium', 'ignoredDomains', 'hasCompletedSetup'], (result) => {
+      settings.scrollThreshold = result.scrollThreshold || 20;
+      settings.timeWindowSeconds = result.timeWindowSeconds || 45;
       settings.isPremium = result.isPremium || false;
       settings.ignoredDomains = result.ignoredDomains || [];
+      settings.hasCompletedSetup = result.hasCompletedSetup || false;
       resolve();
     });
   });
@@ -170,7 +247,7 @@ function renderDomainList() {
   domainList.innerHTML = '';
   
   if (settings.ignoredDomains.length === 0) {
-    domainList.innerHTML = '<div class="domain-empty">No domains ignored. Add domains where you want to disable the extension.</div>';
+    domainList.innerHTML = '<div class="domain-empty">No websites ignored yet. Add domains above where you want to disable the extension.</div>';
     return;
   }
   
@@ -204,16 +281,18 @@ function handleManageSubscription() {
 function handleResetSettings(e) {
   e.preventDefault();
   
-  if (confirm('Are you sure you want to reset all settings to defaults?')) {
+  if (confirm('Are you sure you want to reset all settings to defaults? This will also show the setup wizard again.')) {
     settings = {
-      scrollThreshold: 10,
-      timeWindowSeconds: 30,
-      isPremium: settings.isPremium, // Keep premium status
-      ignoredDomains: []
+      scrollThreshold: 20,
+      timeWindowSeconds: 45,
+      isPremium: settings.isPremium,
+      ignoredDomains: [],
+      hasCompletedSetup: false
     };
     saveSettings();
     updateUI();
     renderDomainList();
+    checkSetupRequired();
   }
 }
 

@@ -1,11 +1,12 @@
 // Background Service Worker for StopScrollingMindlessly
 
-// Default settings
+// Default settings - less sensitive defaults
 const defaultSettings = {
-  scrollThreshold: 10,
-  timeWindowSeconds: 30,
+  scrollThreshold: 20,  // Increased from 10 - less sensitive
+  timeWindowSeconds: 45,  // Increased from 30 - more forgiving
   isPremium: false,
   ignoredDomains: [],
+  hasCompletedSetup: false,
   todos: [
     { id: 1, text: "Complete this task", priority: "medium", completed: false },
     { id: 2, text: "Drink water", priority: "low", completed: false }
@@ -17,6 +18,14 @@ chrome.runtime.onInstalled.addListener(async () => {
   const settings = await chrome.storage.local.get(defaultSettings);
   if (!settings.scrollThreshold) {
     await chrome.storage.local.set(defaultSettings);
+  }
+});
+
+// Handle extension icon click - open setup if not completed
+chrome.action.onClicked.addListener(async (tab) => {
+  const settings = await chrome.storage.local.get('hasCompletedSetup');
+  if (!settings.hasCompletedSetup) {
+    chrome.runtime.openOptionsPage();
   }
 });
 

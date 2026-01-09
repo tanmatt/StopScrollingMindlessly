@@ -3,19 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Stop Scrolling Mindlessly!</title>
+  <title>Time for a Break!</title>
   <link rel="stylesheet" href="intervention.css">
 </head>
 <body>
   <div class="intervention-overlay" id="overlay">
     <div class="intervention-modal">
       <div class="intervention-header">
-        <div class="warning-icon">⚠️</div>
-        <h1>Stop scrolling mindlessly!</h1>
-        <p class="subtitle">Here are your top TODOs</p>
+        <div class="warning-icon">⏸️</div>
+        <h1>Time for a quick break?</h1>
+        <p class="subtitle">You were scrolling for a while. Check your priorities!</p>
       </div>
 
       <div class="todos-section">
+        <h3>📝 Your Tasks</h3>
         <div class="todo-list" id="todoList"></div>
         <div class="add-todo-form" id="addTodoForm">
           <input type="text" id="todoInput" placeholder="Add a quick task..." maxlength="80">
@@ -40,8 +41,16 @@
       </div>
 
       <div class="intervention-footer">
-        <button class="btn-secondary" id="dismissBtn">Dismiss & Continue</button>
-        <button class="btn-primary" id="closeBtn">Back to Work</button>
+        <button class="btn-secondary" id="dismissBtn">
+          <span class="btn-icon">🔁</span>
+          <span class="btn-text">I'm just browsing</span>
+          <span class="btn-desc">Show again later</span>
+        </button>
+        <button class="btn-primary" id="closeBtn">
+          <span class="btn-icon">✅</span>
+          <span class="btn-text">Back to work</span>
+          <span class="btn-desc">Close popup</span>
+        </button>
       </div>
     </div>
   </div>
