@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StopScrollingMindlessly - Marketing Screenshot 5</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Robo, sans-serif;
+      background: linear-gradient(135deg, #fff8e1, #ffecb3);
+      width: 1280px;
+      height: 800px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 30px 100px rgba(0,0,0,0.15);
+      width: 800px;
+      max-width: 600px;
+      padding: 35px;
+      text-align: center;
+    }
+    .header { margin-bottom: 30px; }
+    .header-icon { font-size: 56px; margin-bottom: 15px; }
+    .header h1 { font-size: 28px; color: #f57f17; margin-bottom: 8px; }
+    .header p { font-size: 15px; color: #888; }
+    .price {
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      display: inline-block;
+      padding: 12px 30px;
+      border-radius: 30px;
+      margin-bottom: 30px;
+    }
+    .price-amount { font-size: 36px; font-weight: 700; color: #333; }
+    .price-period { font-size: 16px; color: #666; }
+    .features {
+      text-align: left;
+      margin-bottom: 30px;
+    }
+    .feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      padding: 18px;
+      background: #fafafa;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      transition: transform 0.2s;
+    }
+    .feature:hover { transform: translateX(5px); }
+    .feature-icon { font-size: 28px; flex-shrink: 0; }
+    .feature-text h4 { font-size: 16px; font-weight: 600; color: #333; margin-bottom: 4px; }
+    .feature-text p { font-size: 13px; color: #666; }
+    .upgrade-btn {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      color: #333;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-bottom: 15px;
+    }
+    .upgrade-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 170, 0, 0.3);
+    }
+    .guarantee {
+      font-size: 12px;
+      color: #888;
+    }
+    .guarantee span { color: #4caf50; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-icon">🚀</div>
+      <h1>Upgrade to Premium</h1>
+      <p>Unlock the full experience and boost your productivity</p>
+    </div>
+    
+    <div class="price">
+      <span class="price-amount">$2.99</span>
+      <span class="price-period">/month</span>
+    </div>
+    
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">✅</div>
+        <div class="feature-text">
+          <h4>Unlimited TODOs</h4>
+          <p>Never run out of space for your tasks and goals</p>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🚫</div>
+        <div class="feature-text">
+          <h4>No Advertisements</h4>
+          <p>Clean, distraction-free experience every time</p>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🎨</div>
+        <div class="feature-text">
+          <h4>Dark Mode</h4>
+          <p>Easy on the eyes for late-night work sessions</p>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📊</div>
+        <div class="feature-text">
+          <h4>Priority Levels</h4>
+          <p>Sort and focus on what matters most</p>
+        </div>
+      </div>
+    </div>
+    
+    <button class="upgrade-btn">Get Premium Now →</button>
+    
+    <p class="guarantee">🔒 Secure payment • Cancel anytime • <span>30-day money back guarantee</span></p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StopScrollingMindlessly - Marketing Screenshot 4</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Robo, sans-serif;
+      background: linear-gradient(135deg, #fff8e1, #fff3cd);
+      width: 1280px;
+      height: 800px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 30px 100px rgba(0,0,0,0.15);
+      width: 800px;
+      max-width: 600px;
+      padding: 35px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+    .logo {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+    }
+    .header-text h1 { font-size: 22px; color: #333; margin-bottom: 4px; }
+    .header-text p { font-size: 13px; color: #888; }
+    .section-title { font-size: 18px; font-weight: 600; color: #f57f17; margin-bottom: 8px; }
+    .section-desc { font-size: 14px; color: #856404; margin-bottom: 20px; }
+    .add-domain {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .add-domain input {
+      flex: 1;
+      padding: 14px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .add-domain input:focus { border-color: #f57f17; }
+    .add-domain button {
+      padding: 14px 24px;
+      background: #f57f17;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .domain-list {
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+    .domain-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      background: #fafafa;
+    }
+    .domain-item:last-child { border-bottom: none; }
+    .domain-name { font-size: 14px; color: #333; font-weight: 500; }
+    .domain-remove {
+      background: none;
+      border: none;
+      color: #ccc;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    .domain-remove:hover { background: #ffebee; color: #c62828; }
+    .note {
+      background: #fffde7;
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 13px;
+      color: #856404;
+      line-height: 1.5;
+    }
+    .free-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #4caf50, #45a049);
+      color: white;
+      padding: 10px 16px;
+      border-radius: 25px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .free-badge span { font-size: 18px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">🚫</div>
+      <div class="header-text">
+        <h1>Ignore Websites</h1>
+        <p>Disable the extension on specific sites</p>
+      </div>
+    </div>
+    
+    <div class="free-badge">
+      <span>✅</span>
+      Available in Free Version
+    </div>
+    
+    <h2 class="section-title">🚫 Ignore These Websites</h2>
+    <p class="section-desc">The extension won't bother you on these sites</p>
+    
+    <div class="add-domain">
+      <input type="text" placeholder="e.g., youtube.com, twitter.com, netflix.com">
+      <button>Add</button>
+    </div>
+    
+    <div class="domain-list">
+      <div class="domain-item">
+        <span class="domain-name">youtube.com</span>
+        <button class="domain-remove">×</button>
+      </div>
+      <div class="domain-item">
+        <span class="domain-name">twitter.com</span>
+        <button class="domain-remove">×</button>
+      </div>
+      <div class="domain-item">
+        <span class="domain-name">instagram.com</span>
+        <button class="domain-remove">×</button>
+      </div>
+      <div class="domain-item">
+        <span class="domain-name">netflix.com</span>
+        <button class="domain-remove">×</button>
+      </div>
+    </div>
+    
+    <div class="note">
+      💡 <strong>Pro tip:</strong> Add work-related sites here when you need focused scrolling time. The extension will be completely silent on these domains.
+    </div>
+  </div>
+</body>
+</html>

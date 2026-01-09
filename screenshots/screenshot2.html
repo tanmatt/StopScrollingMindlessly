@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StopScrollingMindlessly - Marketing Screenshot 2</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Robo, sans-serif;
+      background: rgba(0,0,0,0.7);
+      width: 1280px;
+      height: 800px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .overlay {
+      width: 100%;
+      padding: 20px;
+    }
+    .modal {
+      background: white;
+      border-radius: 16px;
+      max-width: 450px;
+      margin: 0 auto;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.4);
+      overflow: hidden;
+      animation: slideUp 0.4s ease-out;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+    .header-icon { font-size: 56px; margin-bottom: 12px; }
+    .header h1 { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+    .header p { font-size: 15px; opacity: 0.9; }
+    .section { padding: 25px; border-bottom: 1px solid #eee; }
+    .section h3 { font-size: 14px; color: #555; margin-bottom: 15px; font-weight: 600; }
+    .todo-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .todo-check {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #667eea;
+      border-radius: 4px;
+    }
+    .todo-text { flex: 1; font-size: 14px; color: #333; }
+    .add-todo { display: flex; gap: 10px; margin-top: 15px; }
+    .add-todo input {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+    .add-todo button {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .tip-section {
+      background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+      padding: 20px;
+    }
+    .tip-header { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #2e7d32; margin-bottom: 8px; }
+    .tip-text { font-size: 14px; color: #1b5e20; line-height: 1.5; }
+    .ad-section { padding: 15px 25px; background: #f5f5f5; }
+    .ad-box {
+      background: linear-gradient(135deg, #fff8e1, #ffecb3);
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .ad-label { font-size: 10px; color: #999; text-transform: uppercase; letter-spacing: 1px; }
+    .ad-text { font-size: 13px; color: #f57f17; margin: 8px 0; }
+    .upgrade-btn {
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      color: #333;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .footer { padding: 20px 25px; display: flex; gap: 12px; }
+    .btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    .btn-icon { font-size: 22px; margin-bottom: 6px; }
+    .btn-text { font-size: 14px; font-weight: 600; }
+    .btn-desc { font-size: 11px; opacity: 0.7; margin-top: 3px; }
+    .btn-secondary {
+      background: linear-gradient(135deg, #f5f5f5, #eeeeee);
+      color: #666;
+      border: 2px solid #e0e0e0;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #4caf50, #45a049);
+      color: white;
+      box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <div class="modal">
+      <div class="header">
+        <div class="header-icon">⏸️</div>
+        <h1>Time for a quick break?</h1>
+        <p>You were scrolling for a while. Check your priorities!</p>
+      </div>
+      <div class="section">
+        <h3>📝 Your Tasks</h3>
+        <div class="todo-item">
+          <div class="todo-check"></div>
+          <span class="todo-text">Complete quarterly report</span>
+        </div>
+        <div class="todo-item">
+          <div class="todo-check"></div>
+          <span class="todo-text">Review project timeline</span>
+        </div>
+        <div class="todo-item">
+          <div class="todo-check"></div>
+          <span class="todo-text">Send follow-up emails</span>
+        </div>
+        <div class="add-todo">
+          <input type="text" placeholder="Add a quick task...">
+          <button>+</button>
+        </div>
+      </div>
+      <div class="tip-section">
+        <div class="tip-header">
+          <span>💡</span>
+          <span>Productivity Tip</span>
+        </div>
+        <p class="tip-text">Take a 5-minute break every 25 minutes of focused work (Pomodoro technique). Your brain will thank you!</p>
+      </div>
+      <div class="ad-section">
+        <div class="ad-box">
+          <span class="ad-label">Sponsored</span>
+          <p class="ad-text">Try Premium for an ad-free experience!</p>
+          <button class="upgrade-btn">Upgrade Now</button>
+        </div>
+      </div>
+      <div class="footer">
+        <button class="btn btn-secondary">
+          <span class="btn-icon">🔁</span>
+          <span class="btn-text">I'm just browsing</span>
+          <span class="btn-desc">Show again later</span>
+        </button>
+        <button class="btn btn-primary">
+          <span class="btn-icon">✅</span>
+          <span class="btn-text">Back to work</span>
+          <span class="btn-desc">Close popup</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
