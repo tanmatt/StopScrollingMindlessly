@@ -1,5 +1,10 @@
 // Background Service Worker for StopScrollingMindlessly
 
+// Track when popup was last shown to prevent rapid re-showing
+let lastPopupTime = 0;
+const POPUP_COOLDOWN_MS = 5000; // 5 seconds cooldown between popups
+let popupWindowId = null;  // Track open popup window
+
 // Default settings - less sensitive defaults
 const defaultSettings = {
   scrollThreshold: 20,  // Increased from 10 - less sensitive
@@ -7,7 +12,6 @@ const defaultSettings = {
   isPremium: false,
   ignoredDomains: [],
   hasCompletedSetup: false,
-  popupWindowId: null,  // Track open popup window
   todos: [
     { id: 1, text: "Complete this task", priority: "medium", completed: false },
     { id: 2, text: "Drink water", priority: "low", completed: false }
@@ -60,10 +64,6 @@ async function handleScrollDetected(url) {
   // Show the intervention popup
   showInterventionPopup();
 }
-
-// Track when popup was last shown to prevent rapid re-showing
-let lastPopupTime = 0;
-const POPUP_COOLDOWN_MS = 5000; // 5 seconds cooldown between popups
 
 async function showInterventionPopup() {
   const currentTime = Date.now();
