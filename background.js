@@ -37,7 +37,7 @@ chrome.action.onClicked.addListener(async (tab) => {
 // Handle messages from content scripts
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "SCROLL_DETECTED") {
-    handleScrollDetected(sender.tab?.url);
+    handleScrollDetected(sender.tab?.url, sender.tab?.id);
   } else if (message.type === "GET_SETTINGS") {
     getSettings().then(sendResponse);
   } else if (message.type === "UPDATE_TODOS") {
@@ -46,11 +46,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     sendResponse({ tips: getProductivityTips() });
   } else if (message.type === "CHECK_PREMIUM") {
     checkPremiumStatus().then(sendResponse);
+  } else if (message.type === "RESET_SCROLL_COUNT") {
+    // Reset scroll count in the specific tab
+    if (sender.tab?.id) {
+      chrome.tabs.sendMessage(sender.tab.id, { type: "RESET_SCROLL_COUNT" });
+    }
   }
   return true;
 });
 
-async function handleScrollDetected(url) {
+async function handleScrollDetected(url, tabId) {
   if (!url) return;
   
   const domain = new URL(url).hostname.replace('www.', '');
@@ -62,7 +67,16 @@ async function handleScrollDetected(url) {
   }
   
   // Show the intervention popup
-  showInterventionPopup();
+  const popupShown = await showInterventionPopup();
+  
+  // Reset scroll count in the tab after showing popup
+  if (popupShown && tabId) {
+    try {
+      chrome.tabs.sendMessage(tabId, { type: "RESET_SCROLL_COUNT" });
+    } catch (e) {
+      // Tab might be closed, ignore
+    }
+  }
 }
 
 async function showInterventionPopup() {
@@ -70,7 +84,7 @@ async function showInterventionPopup() {
   
   // Check cooldown to prevent rapid re-showing
   if (currentTime - lastPopupTime < POPUP_COOLDOWN_MS) {
-    return;
+    return false;
   }
   
   // Check if popup is already open
@@ -81,7 +95,7 @@ async function showInterventionPopup() {
       // Focus the existing popup instead of creating a new one
       chrome.windows.update(popupWindowId, { focused: true });
       lastPopupTime = currentTime;
-      return;
+      return false; // Popup was already open, not newly shown
     } catch (e) {
       // Window no longer exists, reset the ID
       popupWindowId = null;
@@ -122,6 +136,8 @@ async function showInterventionPopup() {
       chrome.windows.onRemoved.removeListener(removedListener);
     }
   });
+  
+  return true; // Popup was newly shown
 }
 
 function getAdPlaceholder() {

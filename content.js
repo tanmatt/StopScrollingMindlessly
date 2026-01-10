@@ -35,6 +35,10 @@ if (chrome.runtime && chrome.runtime.onMessage) {
     if (message.type === "SETTINGS_UPDATED") {
       scrollThreshold = message.settings.scrollThreshold || 10;
       timeWindowSeconds = message.settings.timeWindowSeconds || 30;
+    } else if (message.type === "RESET_SCROLL_COUNT") {
+      // Reset scroll counter when popup is shown
+      scrollCount = 0;
+      scrollTimestamps = [];
     }
   });
 }
