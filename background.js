@@ -7,6 +7,7 @@ const defaultSettings = {
   isPremium: false,
   ignoredDomains: [],
   hasCompletedSetup: false,
+  popupWindowId: null,  // Track open popup window
   todos: [
     { id: 1, text: "Complete this task", priority: "medium", completed: false },
     { id: 2, text: "Drink water", priority: "low", completed: false }
@@ -60,7 +61,33 @@ async function handleScrollDetected(url) {
   showInterventionPopup();
 }
 
+// Track when popup was last shown to prevent rapid re-showing
+let lastPopupTime = 0;
+const POPUP_COOLDOWN_MS = 5000; // 5 seconds cooldown between popups
+
 async function showInterventionPopup() {
+  const currentTime = Date.now();
+  
+  // Check cooldown to prevent rapid re-showing
+  if (currentTime - lastPopupTime < POPUP_COOLDOWN_MS) {
+    return;
+  }
+  
+  // Check if popup is already open
+  if (popupWindowId) {
+    try {
+      // Check if the window still exists
+      await chrome.windows.get(popupWindowId);
+      // Focus the existing popup instead of creating a new one
+      chrome.windows.update(popupWindowId, { focused: true });
+      lastPopupTime = currentTime;
+      return;
+    } catch (e) {
+      // Window no longer exists, reset the ID
+      popupWindowId = null;
+    }
+  }
+  
   const settings = await getSettings();
   
   // Get a random tip
@@ -76,12 +103,24 @@ async function showInterventionPopup() {
   };
   
   // Open the intervention popup
-  chrome.windows.create({
+  const window = await chrome.windows.create({
     url: `intervention.html?data=${encodeURIComponent(JSON.stringify(interventionData))}`,
     type: "popup",
     width: 400,
     height: 500,
     focused: true
+  });
+  
+  // Store the window ID
+  popupWindowId = window.id;
+  lastPopupTime = currentTime;
+  
+  // Listen for popup removal
+  chrome.windows.onRemoved.addListener(function removedListener(windowId) {
+    if (windowId === popupWindowId) {
+      popupWindowId = null;
+      chrome.windows.onRemoved.removeListener(removedListener);
+    }
   });
 }
 
