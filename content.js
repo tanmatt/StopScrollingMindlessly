@@ -10,20 +10,45 @@ let scrollDirection = null;
 let scrollThreshold = 10;
 let timeWindowSeconds = 30;
 
-chrome.runtime.sendMessage({ type: "GET_SETTINGS" }, (settings) => {
-  if (settings) {
-    scrollThreshold = settings.scrollThreshold || 10;
-    timeWindowSeconds = settings.timeWindowSeconds || 30;
+// Helper function to get settings with error handling
+function getSettings() {
+  try {
+    if (chrome.runtime && chrome.runtime.id) {
+      chrome.runtime.sendMessage({ type: "GET_SETTINGS" }, (settings) => {
+        if (settings) {
+          scrollThreshold = settings.scrollThreshold || 10;
+          timeWindowSeconds = settings.timeWindowSeconds || 30;
+        }
+      });
+    }
+  } catch (e) {
+    // Extension context invalidated, use defaults
   }
-});
+}
+
+// Initialize settings
+getSettings();
 
 // Update settings when changed
-chrome.runtime.onMessage.addListener((message) => {
-  if (message.type === "SETTINGS_UPDATED") {
-    scrollThreshold = message.settings.scrollThreshold || 10;
-    timeWindowSeconds = message.settings.timeWindowSeconds || 30;
+if (chrome.runtime && chrome.runtime.onMessage) {
+  chrome.runtime.onMessage.addListener((message) => {
+    if (message.type === "SETTINGS_UPDATED") {
+      scrollThreshold = message.settings.scrollThreshold || 10;
+      timeWindowSeconds = message.settings.timeWindowSeconds || 30;
+    }
+  });
+}
+
+// Helper function to send message with error handling
+function sendScrollDetected() {
+  try {
+    if (chrome.runtime && chrome.runtime.id) {
+      chrome.runtime.sendMessage({ type: "SCROLL_DETECTED" });
+    }
+  } catch (e) {
+    // Extension context invalidated, ignore
   }
-});
+}
 
 // Detect scroll events
 window.addEventListener('scroll', () => {
@@ -54,7 +79,7 @@ window.addEventListener('scroll', () => {
     scrollCount = 0;
     
     // Notify background script
-    chrome.runtime.sendMessage({ type: "SCROLL_DETECTED" });
+    sendScrollDetected();
   }
 });
 
