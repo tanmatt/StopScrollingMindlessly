@@ -1,10 +1,11 @@
 // Content Script for StopScrollingMindlessly
 // Detects mindless scrolling patterns on web pages
 
+// Domain-specific scroll tracking to prevent cross-domain count carryover
+let currentDomain = '';
 let scrollCount = 0;
 let scrollTimestamps = [];
 let lastScrollY = 0;
-let scrollDirection = null;
 let lastActivityTime = Date.now();
 let idleTimeout;
 
@@ -15,14 +16,51 @@ const IDLE_RESET_MS = 5 * 60 * 1000;
 let scrollThreshold = 10;
 let timeWindowSeconds = 30;
 
+// Initialize domain-specific data
+function initializeDomainData() {
+  try {
+    currentDomain = window.location.hostname.replace('www.', '');
+    // Reset scroll data for new domain to ensure domain isolation
+    scrollCount = 0;
+    scrollTimestamps = [];
+    lastActivityTime = Date.now();
+  } catch (e) {
+    // Fallback for edge cases
+    currentDomain = 'unknown';
+  }
+}
+
+// Reset scroll data when navigating to different domain
+function resetForDomainChange() {
+  const newDomain = window.location.hostname.replace('www.', '');
+  if (newDomain !== currentDomain) {
+    currentDomain = newDomain;
+    scrollCount = 0;
+    scrollTimestamps = [];
+    lastActivityTime = Date.now();
+    setupIdleTimeout();
+  }
+}
+
+// Settings validation functions
+function validateScrollThreshold(value) {
+  const num = parseInt(value);
+  return isNaN(num) ? 10 : Math.max(1, Math.min(100, num)); // Between 1-100
+}
+
+function validateTimeWindow(value) {
+  const num = parseInt(value);
+  return isNaN(num) ? 30 : Math.max(5, Math.min(300, num)); // Between 5-300 seconds
+}
+
 // Helper function to get settings with error handling
 function getSettings() {
   try {
     if (chrome.runtime && chrome.runtime.id) {
       chrome.runtime.sendMessage({ type: "GET_SETTINGS" }, (settings) => {
         if (settings) {
-          scrollThreshold = settings.scrollThreshold || 10;
-          timeWindowSeconds = settings.timeWindowSeconds || 30;
+          scrollThreshold = validateScrollThreshold(settings.scrollThreshold) || 10;
+          timeWindowSeconds = validateTimeWindow(settings.timeWindowSeconds) || 30;
         }
       });
     }
@@ -31,16 +69,24 @@ function getSettings() {
   }
 }
 
-// Initialize settings and idle timeout
+// Initialize domain-specific data and settings
+initializeDomainData();
 getSettings();
 setupIdleTimeout();
+
+// Handle SPA navigation and page changes
+window.addEventListener('load', initializeDomainData);
+window.addEventListener('beforeunload', () => {
+  clearTimeout(idleTimeout);
+  clearTimeout(scrollTimeout);
+});
 
 // Update settings when changed
 if (chrome.runtime && chrome.runtime.onMessage) {
   chrome.runtime.onMessage.addListener((message) => {
     if (message.type === "SETTINGS_UPDATED") {
-      scrollThreshold = message.settings.scrollThreshold || 10;
-      timeWindowSeconds = message.settings.timeWindowSeconds || 30;
+      scrollThreshold = validateScrollThreshold(message.settings.scrollThreshold) || 10;
+      timeWindowSeconds = validateTimeWindow(message.settings.timeWindowSeconds) || 30;
     } else if (message.type === "RESET_SCROLL_COUNT") {
       // Reset scroll counter when popup is shown
       scrollCount = 0;
@@ -76,50 +122,43 @@ function sendScrollDetected() {
   }
 }
 
-// Detect scroll events
+// Single comprehensive scroll event handler
+let scrollTimeout;
 window.addEventListener('scroll', () => {
   const currentTime = Date.now();
   const currentScrollY = window.scrollY;
-  
-  // Detect scroll direction
-  if (currentScrollY > lastScrollY) {
-    scrollDirection = 'down';
-  } else if (currentScrollY < lastScrollY) {
-    scrollDirection = 'up';
-  }
+
+  // Reset idle timeout on any scroll activity
+  setupIdleTimeout();
+
+  // Clear existing debounce timeout
+  clearTimeout(scrollTimeout);
+
+  // Set new debounce timeout to reset counters after 2 seconds of no scrolling
+  scrollTimeout = setTimeout(() => {
+    scrollCount = 0;
+    scrollTimestamps = [];
+  }, 2000);
+
+  // Update scroll direction tracking
   lastScrollY = currentScrollY;
-  
-  // Add timestamp for this scroll
+
+  // Add timestamp for this scroll event
   scrollTimestamps.push(currentTime);
-  
+
   // Remove timestamps older than time window
   const cutoffTime = currentTime - (timeWindowSeconds * 1000);
   scrollTimestamps = scrollTimestamps.filter(t => t > cutoffTime);
-  
-  // Count scrolls in current direction
+
+  // Count total scroll events (not direction-specific)
   scrollCount++;
-  
+
   // Check if we've exceeded threshold
   if (scrollCount >= scrollThreshold) {
     // Reset counter
     scrollCount = 0;
-    
+
     // Notify background script
     sendScrollDetected();
   }
-});
-
-// Reset idle timeout on scroll activity
-window.addEventListener('scroll', () => {
-  setupIdleTimeout();
-});
-
-// Debounce scroll reset when user stops scrolling
-let scrollTimeout;
-window.addEventListener('scroll', () => {
-  clearTimeout(scrollTimeout);
-  scrollTimeout = setTimeout(() => {
-    scrollCount = 0;
-    scrollTimestamps = [];
-  }, 2000); // Reset after 2 seconds of no scrolling
 });
