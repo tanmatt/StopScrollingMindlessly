@@ -5,6 +5,11 @@ let scrollCount = 0;
 let scrollTimestamps = [];
 let lastScrollY = 0;
 let scrollDirection = null;
+let lastActivityTime = Date.now();
+let idleTimeout;
+
+// Idle reset after 5 minutes (300,000 ms)
+const IDLE_RESET_MS = 5 * 60 * 1000;
 
 // Default threshold - will be overridden by settings from background
 let scrollThreshold = 10;
@@ -26,8 +31,9 @@ function getSettings() {
   }
 }
 
-// Initialize settings
+// Initialize settings and idle timeout
 getSettings();
+setupIdleTimeout();
 
 // Update settings when changed
 if (chrome.runtime && chrome.runtime.onMessage) {
@@ -39,8 +45,24 @@ if (chrome.runtime && chrome.runtime.onMessage) {
       // Reset scroll counter when popup is shown
       scrollCount = 0;
       scrollTimestamps = [];
+      // Reset idle timeout since there's activity
+      setupIdleTimeout();
     }
   });
+}
+
+// Helper function to reset scroll count due to idle timeout
+function resetScrollCountDueToIdle() {
+  scrollCount = 0;
+  scrollTimestamps = [];
+  // Set up next idle timeout
+  setupIdleTimeout();
+}
+
+// Helper function to setup idle timeout
+function setupIdleTimeout() {
+  clearTimeout(idleTimeout);
+  idleTimeout = setTimeout(resetScrollCountDueToIdle, IDLE_RESET_MS);
 }
 
 // Helper function to send message with error handling
@@ -85,6 +107,11 @@ window.addEventListener('scroll', () => {
     // Notify background script
     sendScrollDetected();
   }
+});
+
+// Reset idle timeout on scroll activity
+window.addEventListener('scroll', () => {
+  setupIdleTimeout();
 });
 
 // Debounce scroll reset when user stops scrolling
