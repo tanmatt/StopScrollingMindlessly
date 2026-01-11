@@ -118,6 +118,7 @@ StopScrollingMindlessly/
 - [ ] **Domain Disable**: "Disable on this site" button must add current domain to ignore list
 - [ ] **Scroll Reset**: Scroll count must reset when popup appears
 - [ ] **Idle Reset**: Scroll count must reset after 5 minutes of no scrolling activity
+- [ ] **Domain specific scrolls**: Scroll count must be specific to a domain and should not carry forward to another domain / tab
 
 #### Todo Management
 - [ ] **Add Todo**: Must accept text input and create new todo item
