@@ -11,9 +11,8 @@ const todoInput = document.getElementById('todoInput');
 const addTodoBtn = document.getElementById('addTodoBtn');
 const tipText = document.getElementById('tipText');
 const adSection = document.getElementById('adSection');
-const dismissBtn = document.getElementById('dismissBtn');
-const closeBtn = document.getElementById('closeBtn');
-const upgradeBtn = document.getElementById('upgradeBtn');
+const modalCloseBtn = document.getElementById('modalCloseBtn');
+const disableDomainBtn = document.getElementById('disableDomainBtn');
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
@@ -82,9 +81,8 @@ function setupEventListeners() {
   todoInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') handleAddTodo();
   });
-  dismissBtn.addEventListener('click', dismissAndContinue);
-  closeBtn.addEventListener('click', closeWindow);
-  upgradeBtn.addEventListener('click', handleUpgrade);
+  modalCloseBtn.addEventListener('click', closeWindow);
+  disableDomainBtn.addEventListener('click', handleDisableDomain);
 }
 
 // Render todos
@@ -180,6 +178,31 @@ function dismissAndContinue() {
 // Close window
 function closeWindow() {
   window.close();
+}
+
+// Handle disable domain
+function handleDisableDomain() {
+  if (interventionData && interventionData.currentDomain) {
+    // Get current ignored domains
+    chrome.storage.local.get(['ignoredDomains'], (result) => {
+      const ignoredDomains = result.ignoredDomains || [];
+      const domain = interventionData.currentDomain.replace('www.', '');
+
+      // Add domain if not already ignored
+      if (!ignoredDomains.includes(domain)) {
+        ignoredDomains.push(domain);
+        chrome.storage.local.set({ ignoredDomains }, () => {
+          alert(`Extension disabled on ${domain}. You can re-enable it in the extension settings.`);
+          window.close();
+        });
+      } else {
+        alert(`Extension is already disabled on ${domain}.`);
+        window.close();
+      }
+    });
+  } else {
+    alert('Unable to determine current domain.');
+  }
 }
 
 // Handle upgrade (placeholder)

@@ -9,6 +9,7 @@
 <body>
   <div class="intervention-overlay" id="overlay">
     <div class="intervention-modal">
+      <button class="close-btn" id="modalCloseBtn" title="Close">×</button>
       <div class="intervention-header">
         <div class="warning-icon">⏸️</div>
         <h1>Time for a quick break?</h1>
@@ -36,20 +37,14 @@
         <div class="ad-content">
           <span class="ad-label">Sponsored</span>
           <p>Try all the premium features free for a limited time. No card required.</p>
-          <button class="upgrade-btn" id="upgradeBtn">Get Free Trial</button>
         </div>
       </div>
 
       <div class="intervention-footer">
-        <button class="btn-secondary" id="dismissBtn">
-          <span class="btn-icon">🔁</span>
-          <span class="btn-text">I'm just browsing</span>
-          <span class="btn-desc">Show again later</span>
-        </button>
-        <button class="btn-primary" id="closeBtn">
-          <span class="btn-icon">✅</span>
-          <span class="btn-text">Back to work</span>
-          <span class="btn-desc">Close popup</span>
+        <button class="btn-disable" id="disableDomainBtn">
+          <span class="btn-icon">🚫</span>
+          <span class="btn-text">Disable on this site</span>
+          <span class="btn-desc">Stop showing popups here</span>
         </button>
       </div>
     </div>

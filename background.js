@@ -113,6 +113,7 @@ async function showInterventionPopup() {
     todos: settings.todos.filter(t => !t.completed).slice(0, 5),
     tip: randomTip,
     isPremium: settings.isPremium,
+    currentDomain: domain,
     adPlaceholder: !settings.isPremium ? getAdPlaceholder() : null
   };
   
