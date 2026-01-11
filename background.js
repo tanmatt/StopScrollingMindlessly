@@ -67,7 +67,7 @@ async function handleScrollDetected(url, tabId) {
   }
   
   // Show the intervention popup
-  const popupShown = await showInterventionPopup();
+  const popupShown = await showInterventionPopup(domain);
   
   // Reset scroll count in the tab after showing popup
   if (popupShown && tabId) {
@@ -79,7 +79,7 @@ async function handleScrollDetected(url, tabId) {
   }
 }
 
-async function showInterventionPopup() {
+async function showInterventionPopup(domain) {
   const currentTime = Date.now();
   
   // Check cooldown to prevent rapid re-showing
