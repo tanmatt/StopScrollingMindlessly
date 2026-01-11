@@ -142,8 +142,8 @@ async function showInterventionPopup() {
 
 function getAdPlaceholder() {
   return {
-    text: "Sponsored - Try Premium for Ad-Free Experience",
-    cta: "Upgrade Now"
+    text: "Try all the premium features free for a limited time. No card required.",
+    cta: "Get Free Trial"
   };
 }
 
