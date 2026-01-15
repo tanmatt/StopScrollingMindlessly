@@ -1,4 +1,4 @@
-# StopScrollingMindlessly
+# Stop Scrolling Mindlessly
 
 A Chrome extension that helps you stop mindless scrolling by showing an intervention popup when you scroll too much on any website.
 
@@ -39,7 +39,7 @@ A Chrome extension that helps you stop mindless scrolling by showing an interven
 1. Open Chrome and navigate to `chrome://extensions/`
 2. Enable "Developer mode" in the top right
 3. Click "Load unpacked"
-4. Select the `StopScrollingMindlessly` folder
+4. Select the `Stop Scrolling Mindlessly` folder
 5. The extension is now installed!
 
 ## Usage
@@ -78,7 +78,7 @@ When you scroll mindlessly, a friendly popup appears with:
 ## Files
 
 ```
-StopScrollingMindlessly/
+Stop Scrolling Mindlessly/
 ├── manifest.json           # Extension configuration
 ├── background.js           # Service worker - state management
 ├── content.js             # Scroll detection on web pages

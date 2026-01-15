@@ -1,4 +1,4 @@
-// Background Service Worker for StopScrollingMindlessly
+// Background Service Worker for Stop Scrolling Mindlessly
 
 // Track when popup was last shown to prevent rapid re-showing
 let lastPopupTime = 0;

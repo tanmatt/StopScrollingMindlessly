@@ -1,4 +1,4 @@
-// Options/Settings Script for StopScrollingMindlessly
+// Options/Settings Script for Stop Scrolling Mindlessly
 
 let settings = {
   scrollThreshold: 20,
@@ -44,7 +44,7 @@ function checkSetupRequired() {
   if (!settings.hasCompletedSetup) {
     setupSection.style.display = 'block';
     sensitivitySection.style.display = 'none';
-    domainSection.style.display = 'none';
+    domainSection.style.display = 'block'; // Show domain section even before setup
   } else {
     setupSection.style.display = 'none';
     sensitivitySection.style.display = 'block';

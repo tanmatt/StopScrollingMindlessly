@@ -1,4 +1,4 @@
-// Content Script for StopScrollingMindlessly
+// Content Script for Stop Scrolling Mindlessly
 // Detects mindless scrolling patterns on web pages
 
 // Domain-specific scroll tracking to prevent cross-domain count carryover

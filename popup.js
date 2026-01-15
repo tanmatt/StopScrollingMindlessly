@@ -1,4 +1,4 @@
-// Popup Script for StopScrollingMindlessly
+// Popup Script for Stop Scrolling Mindlessly
 
 const MAX_FREE_TODOS = 5;
 let todos = [];
@@ -31,17 +31,13 @@ const productivityTips = [
 
 // DOM Elements
 const todoList = document.getElementById('todoList');
-const todoForm = document.getElementById('todoForm');
 const todoInput = document.getElementById('todoInput');
 const prioritySelect = document.getElementById('prioritySelect');
+const addTodoBtn = document.getElementById('addTodoBtn');
 const tipText = document.getElementById('tipText');
 const refreshTip = document.getElementById('refreshTip');
-const premiumBadge = document.getElementById('premiumBadge');
-const premiumCTA = document.getElementById('premiumCTA');
-const upgradeBtn = document.getElementById('upgradeBtn');
-const upgradeLink = document.getElementById('upgradeLink');
+const adSection = document.getElementById('adSection');
 const settingsLink = document.getElementById('settingsLink');
-const todoLimitNote = document.getElementById('todoLimitNote');
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
@@ -54,10 +50,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // Setup event listeners
 function setupEventListeners() {
-  todoForm.addEventListener('submit', handleAddTodo);
+  addTodoBtn.addEventListener('click', handleAddTodo);
+  todoInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleAddTodo();
+  });
   refreshTip.addEventListener('click', displayRandomTip);
-  upgradeBtn.addEventListener('click', handleUpgrade);
-  upgradeLink.addEventListener('click', handleUpgrade);
   settingsLink.addEventListener('click', (e) => {
     e.preventDefault();
     chrome.runtime.openOptionsPage();
@@ -81,34 +78,9 @@ async function loadSettings() {
 // Update premium UI
 function updatePremiumUI() {
   if (isPremium) {
-    premiumBadge.textContent = 'PREMIUM';
-    premiumBadge.className = 'badge premium';
-    premiumCTA.style.display = 'none';
-    todoLimitNote.style.display = 'none';
+    adSection.style.display = 'none';
   } else {
-    premiumBadge.textContent = 'FREE';
-    premiumBadge.className = 'badge free';
-    premiumCTA.style.display = 'block';
-    updateTodoLimitNote();
-  }
-}
-
-// Update todo limit note based on current count
-function updateTodoLimitNote() {
-  if (isPremium) {
-    todoLimitNote.style.display = 'none';
-    return;
-  }
-  
-  const activeTodos = todos.filter(t => !t.completed);
-  const remaining = MAX_FREE_TODOS - activeTodos.length;
-  
-  if (remaining <= 0) {
-    todoLimitNote.innerHTML = `You've reached the limit! <a href="#" id="upgradeLink">Upgrade for unlimited todos</a>`;
-    document.getElementById('upgradeLink').addEventListener('click', handleUpgrade);
-  } else {
-    todoLimitNote.innerHTML = `Free users: ${remaining} todo${remaining !== 1 ? 's' : ''} remaining. <a href="#" id="upgradeLink">Upgrade for unlimited!</a>`;
-    document.getElementById('upgradeLink').addEventListener('click', handleUpgrade);
+    adSection.style.display = 'block';
   }
 }
 
@@ -149,30 +121,28 @@ function renderTodos() {
 }
 
 // Handle add todo
-function handleAddTodo(e) {
-  e.preventDefault();
+function handleAddTodo() {
   const text = todoInput.value.trim();
-  
+
   if (!text) return;
-  
+
   // Check limit for free users
   const activeTodos = todos.filter(t => !t.completed);
   if (!isPremium && activeTodos.length >= MAX_FREE_TODOS) {
     alert('You\'ve reached the limit of 5 todos. Upgrade to Premium for unlimited todos!');
     return;
   }
-  
+
   const newTodo = {
     id: Date.now(),
     text: text,
     priority: prioritySelect.value,
     completed: false
   };
-  
+
   todos.push(newTodo);
   saveTodos();
   renderTodos();
-  updateTodoLimitNote();
   todoInput.value = '';
 }
 
@@ -182,7 +152,6 @@ function handleToggleTodo(e) {
   todos[index].completed = !todos[index].completed;
   saveTodos();
   renderTodos();
-  updateTodoLimitNote();
 }
 
 // Handle delete todo
@@ -191,7 +160,6 @@ function handleDeleteTodo(e) {
   todos.splice(index, 1);
   saveTodos();
   renderTodos();
-  updateTodoLimitNote();
 }
 
 // Save todos
