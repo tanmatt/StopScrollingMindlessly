@@ -19,10 +19,6 @@ const domainInput = document.getElementById('domainInput');
 const addDomainBtn = document.getElementById('addDomainBtn');
 const domainList = document.getElementById('domainList');
 const premiumBadge = document.getElementById('premiumBadge');
-const premiumSection = document.getElementById('premiumSection');
-const premiumActiveSection = document.getElementById('premiumActiveSection');
-const upgradeBtn = document.getElementById('upgradeBtn');
-const manageBtn = document.getElementById('manageBtn');
 const resetSettings = document.getElementById('resetSettings');
 const setupSection = document.getElementById('setupSection');
 const sensitivitySection = document.getElementById('sensitivitySection');
@@ -60,10 +56,8 @@ function setupEventListeners() {
   domainInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') handleAddDomain();
   });
-  upgradeBtn.addEventListener('click', handleUpgrade);
-  manageBtn.addEventListener('click', handleManageSubscription);
   resetSettings.addEventListener('click', handleResetSettings);
-  
+
   // Setup wizard listeners
   document.querySelectorAll('.setup-option').forEach(option => {
     option.addEventListener('click', () => {
@@ -72,7 +66,7 @@ function setupEventListeners() {
       selectedSensitivity = option.dataset.sensitivity;
     });
   });
-  
+
   if (saveSetupBtn) {
     saveSetupBtn.addEventListener('click', saveSetup);
   }
@@ -170,17 +164,9 @@ function updateUI() {
 
 // Update premium UI
 function updatePremiumUI() {
-  if (settings.isPremium) {
-    premiumBadge.textContent = 'PREMIUM';
-    premiumBadge.className = 'badge premium';
-    premiumSection.style.display = 'none';
-    premiumActiveSection.style.display = 'block';
-  } else {
-    premiumBadge.textContent = 'FREE';
-    premiumBadge.className = 'badge free';
-    premiumSection.style.display = 'block';
-    premiumActiveSection.style.display = 'none';
-  }
+  // Always show FREE badge during limited time offer
+  premiumBadge.textContent = 'FREE';
+  premiumBadge.className = 'badge free';
 }
 
 // Handle scroll threshold change
