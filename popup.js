@@ -35,7 +35,7 @@ const prioritySelect = document.getElementById('prioritySelect');
 const addTodoBtn = document.getElementById('addTodoBtn');
 const tipText = document.getElementById('tipText');
 const refreshTip = document.getElementById('refreshTip');
-const adSection = document.getElementById('adSection');
+const promoSection = document.getElementById('promoSection');
 const settingsLink = document.getElementById('settingsLink');
 
 // Initialize
@@ -76,11 +76,8 @@ async function loadSettings() {
 
 // Update premium UI
 function updatePremiumUI() {
-  if (isPremium) {
-    adSection.style.display = 'none';
-  } else {
-    adSection.style.display = 'block';
-  }
+  // Always show the promotional message for now
+  promoSection.style.display = 'block';
 }
 
 // Render todos
@@ -125,13 +122,7 @@ function handleAddTodo() {
 
   if (!text) return;
 
-  // Check limit for free users
-  const activeTodos = todos.filter(t => !t.completed);
-  if (!isPremium && activeTodos.length >= MAX_FREE_TODOS) {
-    alert('You\'ve reached the limit of 5 todos. Upgrade to Premium for unlimited todos!');
-    return;
-  }
-
+  // Unlimited todos during limited time free premium offer
   const newTodo = {
     id: Date.now(),
     text: text,
