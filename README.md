@@ -23,9 +23,10 @@ A Chrome extension that helps you stop mindless scrolling by showing an interven
 - 20 curated tips covering time management, focus, and wellness
 - Tips are immediately visible without scrolling
 
-### 🚫 Domain Control
-- **Disable on specific sites**: One-click button to stop popups on current domain
-- **Domain ignore list**: Add/remove domains where extension is disabled
+### 🚫 Domain Management
+- **Exclude specific sites**: One-click "Disable on this site" button in intervention popup
+- **Excluded domains list**: Add/remove domains where extension won't trigger
+- **Early access**: Domain management available even before completing setup
 - **Granular control**: Choose exactly where you want intervention
 
 ### 🎨 Modern UI
@@ -111,31 +112,48 @@ Stop Scrolling Mindlessly/
 ### Functional Requirements
 
 #### Core Features
-- [ ] **Scroll Detection**: Extension must detect rapid scrolling patterns (configurable threshold)
-- [ ] **Intervention Popup**: Modal must appear when scroll threshold is exceeded
-- [ ] **Popup Positioning**: Modal should appear at top of viewport, not center
-- [ ] **Close Button**: X button in top-right corner must close popup
-- [ ] **Domain Disable**: "Disable on this site" button must add current domain to ignore list
-- [ ] **Scroll Reset**: Scroll count must reset when popup appears
+- [ ] **Scroll Detection**: Extension must detect rapid scrolling patterns (configurable threshold: 10-40 scrolls within 20-90 seconds)
+- [ ] **Intervention Popup**: Modal must appear when scroll threshold is exceeded with proper positioning and styling
+- [ ] **Popup Positioning**: Modal should appear at top of viewport with overlay background
+- [ ] **Close Button**: X button in top-right corner must close popup and reset scroll count
+- [ ] **Domain Exclusion**: "Disable on this site" button must add current domain to excluded domains list
+- [ ] **Scroll Reset**: Scroll count must reset when popup appears and after 2 seconds of no scrolling
 - [ ] **Idle Reset**: Scroll count must reset after 5 minutes of no scrolling activity
-- [ ] **Domain specific scrolls**: Scroll count must be specific to a domain and should not carry forward to another domain / tab
+- [ ] **Domain Isolation**: Scroll count must be specific to each domain and not carry over between tabs/sites
+- [ ] **Cooldown Period**: Extension should not show multiple popups within 5 seconds
 
 #### Todo Management
-- [ ] **Add Todo**: Must accept text input and create new todo item
-- [ ] **Complete Todo**: Checkbox must toggle completion status
-- [ ] **Delete Todo**: Delete button must remove todo item
-- [ ] **Priority Sorting**: Todos must sort by completion status, then priority
-- [ ] **Persistent Storage**: Todos must persist across browser sessions
+- [ ] **Add Todo**: Must accept text input (max 80 chars) and create new todo with medium priority default
+- [ ] **Complete Todo**: Checkbox must toggle completion status and update sorting
+- [ ] **Delete Todo**: Delete button must remove todo item from list and storage
+- [ ] **Priority Sorting**: Todos must sort incomplete first, then by priority (High > Medium > Low)
+- [ ] **Priority Levels**: Must support High/Medium/Low priorities with visual indicators
+- [ ] **Persistent Storage**: Todos must persist across browser sessions and extension reloads
+- [ ] **Todo Limits**: Free users limited to 5 active todos, premium users unlimited
+- [ ] **Input Validation**: Must prevent empty todos and handle special characters
 
 #### Productivity Tips
-- [ ] **Tip Display**: Random tip must show in intervention popup
-- [ ] **Tip Visibility**: Tip section must be immediately visible without scrolling
-- [ ] **Tip Content**: Must display one of 20 curated productivity tips
+- [ ] **Tip Display**: Random tip must show in both popup and intervention with refresh capability
+- [ ] **Tip Visibility**: Tip section must be immediately visible without scrolling popup content
+- [ ] **Tip Content**: Must display one of 20 curated productivity tips with proper formatting
+- [ ] **Tip Refresh**: New Tip button must show different tip each click
+- [ ] **Tip Persistence**: Same tip should persist during popup session but refresh on new popup
 
-#### Domain Control
-- [ ] **Ignore List**: Must maintain list of ignored domains
-- [ ] **Domain Detection**: Must extract clean domain name (remove www.)
-- [ ] **Ignore Logic**: Must skip scroll detection on ignored domains
+#### Domain Management
+- [ ] **Excluded Domains List**: Must maintain persistent list of domains where extension won't trigger
+- [ ] **Domain Detection**: Must extract clean domain name (remove www., protocol, paths)
+- [ ] **Domain Validation**: Must validate domain format and prevent duplicates/invalid entries
+- [ ] **Exclusion Logic**: Must skip scroll detection completely on excluded domains
+- [ ] **Early Access**: Domain management must be available before setup completion
+- [ ] **Domain Removal**: Must allow removal of domains from excluded list
+- [ ] **Domain Display**: Must show clean domain names in settings list
+
+#### Settings & Configuration
+- [ ] **Sensitivity Settings**: Scroll threshold (10-40) and time window (20-90s) must be adjustable
+- [ ] **Setup Wizard**: First-time setup must offer Relaxed/Balanced/Strict presets
+- [ ] **Settings Persistence**: All configuration changes must persist across browser sessions
+- [ ] **Settings Validation**: Must prevent invalid values and provide sensible defaults
+- [ ] **Reset Functionality**: Reset to defaults must clear all settings and show setup wizard
 
 ### Non-Functional Requirements
 
@@ -158,52 +176,129 @@ Stop Scrolling Mindlessly/
 ### Testing Scenarios
 
 #### Installation & Setup
-- [ ] **Fresh Install**: Extension loads without errors on first install
-- [ ] **Permission Request**: Appropriate permissions requested during install
-- [ ] **Setup Wizard**: First-time setup flow works correctly
-- [ ] **Default Settings**: Sensible defaults applied on installation
+- [ ] **Fresh Install**: Extension loads without errors on first install, icon appears in toolbar
+- [ ] **Permission Request**: Appropriate permissions (storage, activeTab, all_urls) requested during install
+- [ ] **Setup Wizard**: First-time setup flow works correctly with three sensitivity options
+- [ ] **Default Settings**: Sensible defaults applied (20 scrolls, 45 seconds, empty domain list)
+- [ ] **Setup Skip**: Extension functions without completing setup wizard
+- [ ] **Setup Completion**: Settings saved and applied after setup completion
+- [ ] **Icon Click Behavior**: Clicking extension icon opens setup if not completed, popup if completed
 
-#### Scroll Detection
-- [ ] **Threshold Trigger**: Popup appears after configured scroll threshold
-- [ ] **Time Window**: Scroll timing window works correctly
-- [ ] **Multiple Tabs**: Detection works independently per tab
-- [ ] **Ignored Domains**: No detection on domains in ignore list
-- [ ] **Popup Reset**: Scroll count resets when popup is shown
-- [ ] **Idle Reset**: Scroll count resets after 5 minutes idle
+#### Scroll Detection Core Functionality
+- [ ] **Basic Scroll Detection**: Scrolling triggers popup after reaching threshold
+- [ ] **Threshold Accuracy**: Popup appears exactly after configured scroll count (test with different values)
+- [ ] **Time Window Accuracy**: Scroll timing window works correctly (test 20s, 45s, 90s windows)
+- [ ] **Scroll Direction**: Both up and down scrolling counted toward threshold
+- [ ] **Scroll Speed**: Rapid scrolling vs slow scrolling both counted equally
+- [ ] **Mouse Wheel**: Mouse wheel scrolling detected
+- [ ] **Touchpad**: Touchpad scrolling detected
+- [ ] **Keyboard Scrolling**: Spacebar/page up/down scrolling detected
+- [ ] **Scrollbar Dragging**: Manual scrollbar dragging detected
 
-#### Intervention Popup
-- [ ] **Modal Display**: Popup appears correctly positioned at top
-- [ ] **Content Loading**: All sections (todos, tip, ad) load properly
-- [ ] **Close Button**: X button closes popup
-- [ ] **Disable Domain**: Domain added to ignore list when button clicked
-- [ ] **Todo Interaction**: Add, complete, delete todos work in popup
-- [ ] **Tip Visibility**: Productivity tip immediately visible
+#### Domain Isolation & Exclusion
+- [ ] **Domain Isolation**: Scroll counts reset when navigating to different domains
+- [ ] **Subdomain Handling**: www.example.com treated same as example.com
+- [ ] **HTTPS/HTTP**: Protocol doesn't affect domain detection
+- [ ] **Port Numbers**: Port numbers properly stripped from domain
+- [ ] **Query Parameters**: URL parameters don't affect domain detection
+- [ ] **Excluded Domain Skip**: No scroll detection on domains in excluded list
+- [ ] **Domain Exclusion Timing**: Exclusion takes effect immediately without reload
+- [ ] **Multiple Exclusions**: Multiple domains can be excluded simultaneously
 
-#### Todo Management
-- [ ] **Add Todo**: New todos added with correct default priority
-- [ ] **Complete Todo**: Checkbox toggles visual state and sorting
-- [ ] **Delete Todo**: Todo removed from list and storage
-- [ ] **Priority Display**: High/Medium/Low priorities shown correctly
-- [ ] **Sorting Logic**: Incomplete todos first, then by priority
-- [ ] **Persistence**: Todos survive browser restart
+#### Intervention Popup Behavior
+- [ ] **Modal Positioning**: Popup appears at top of viewport with proper overlay
+- [ ] **Modal Sizing**: Popup maintains consistent dimensions across screen sizes
+- [ ] **Content Loading**: All sections (todos, tip, ad) load within 300ms
+- [ ] **Close Button**: X button closes popup and resets scroll count
+- [ ] **Background Click**: Clicking overlay background closes popup
+- [ ] **ESC Key**: ESC key closes popup
+- [ ] **Disable Domain**: "Disable on this site" button adds current domain to excluded list
+- [ ] **Domain Already Excluded**: Proper message when trying to exclude already excluded domain
+- [ ] **Popup Persistence**: Popup stays open until explicitly closed
+
+#### Todo Management - Popup
+- [ ] **Add Todo**: Text input creates todo with medium priority default
+- [ ] **Add Todo Enter Key**: Enter key in input field adds todo
+- [ ] **Add Todo Button Click**: Plus button adds todo
+- [ ] **Empty Todo Prevention**: Cannot add empty todos
+- [ ] **Todo Length Limit**: 80 character limit enforced
+- [ ] **Priority Selection**: High/Medium/Low priorities work correctly
+- [ ] **Todo Limits**: Free users blocked at 5 active todos
+- [ ] **Premium Override**: Premium users can add unlimited todos
+
+#### Todo Management - Extension Popup
+- [ ] **Todo Display**: All todos display in extension popup
+- [ ] **Todo Completion**: Checkbox toggles completion status
+- [ ] **Todo Deletion**: Delete button removes todo
+- [ ] **Priority Indicators**: Visual priority indicators (🔴🟡🟢) display correctly
+- [ ] **Sorting Logic**: Incomplete todos appear before completed, sorted by priority
+- [ ] **Sorting Updates**: Sorting updates immediately after completion/deletion
+- [ ] **Persistence**: Todos persist across popup opens/closes
+
+#### Productivity Tips
+- [ ] **Tip Display**: Random tip shows in both intervention and extension popups
+- [ ] **Tip Visibility**: Tip immediately visible without scrolling
+- [ ] **Tip Content**: All 20 tips display correctly formatted
+- [ ] **Tip Randomization**: Different tips show on each popup appearance
+- [ ] **Tip Refresh**: "New Tip" button shows different tip
+- [ ] **Tip Persistence**: Same tip persists during popup session
+- [ ] **Tip Variety**: All tips eventually show over multiple popup appearances
 
 #### Settings & Configuration
-- [ ] **Sensitivity Settings**: Scroll threshold and time window adjustable
-- [ ] **Domain Management**: Add/remove domains from ignore list
-- [ ] **Settings Persistence**: Configuration changes saved and applied
-- [ ] **Validation**: Invalid inputs handled gracefully
+- [ ] **Scroll Threshold Slider**: Range 10-40 works correctly
+- [ ] **Time Window Slider**: Range 20-90 seconds works correctly
+- [ ] **Settings Preview**: Live preview of threshold/time window values
+- [ ] **Settings Persistence**: Settings survive browser restart
+- [ ] **Settings Validation**: Invalid values prevented
+- [ ] **Domain Addition**: Add domain with various formats (example.com, www.example.com, https://example.com)
+- [ ] **Domain Validation**: Invalid domains rejected (empty, malformed)
+- [ ] **Domain Duplicates**: Duplicate domains prevented
+- [ ] **Domain Removal**: Remove button deletes domains from list
+- [ ] **Domain Persistence**: Excluded domains persist across sessions
 
-#### Edge Cases
-- [ ] **Rapid Clicking**: Multiple rapid scroll events handled correctly
-- [ ] **Tab Switching**: Detection continues when switching tabs
-- [ ] **Browser Restart**: State restored correctly after restart
-- [ ] **Memory Pressure**: Extension handles low memory conditions
-- [ ] **Network Issues**: No external dependencies fail gracefully
+#### Reset & Recovery
+- [ ] **Scroll Reset on Popup**: Scroll count resets when intervention popup appears
+- [ ] **Idle Reset**: Scroll count resets after 5 minutes of no activity
+- [ ] **Short Reset**: Scroll count resets after 2 seconds of no scrolling
+- [ ] **Tab Switch Reset**: Scroll count maintains per tab
+- [ ] **Domain Change Reset**: Scroll count resets when navigating to different domain
+- [ ] **Cooldown Period**: Multiple popups prevented within 5 seconds
+
+#### Edge Cases & Error Handling
+- [ ] **Rapid Scrolling**: Very fast scrolling doesn't break detection
+- [ ] **Very Slow Scrolling**: Very slow scrolling still counts toward threshold
+- [ ] **Mixed Scroll Types**: Mouse wheel + keyboard scrolling counted together
+- [ ] **Tab Closure**: Extension handles tab closure gracefully
+- [ ] **Window Resize**: Popup positioning maintains during window resize
+- [ ] **Multiple Monitors**: Extension works across multiple monitors
+- [ ] **Incognito Mode**: Extension functions in incognito windows
+- [ ] **Extension Reload**: State maintained after extension reload
+- [ ] **Browser Crash Recovery**: Extension recovers gracefully from browser crashes
+
+#### Performance & Resource Usage
+- [ ] **Memory Usage**: Extension doesn't cause excessive memory usage
+- [ ] **CPU Usage**: Scroll detection doesn't spike CPU usage
+- [ ] **Storage Usage**: Minimal Chrome storage space used
+- [ ] **Popup Load Time**: Popups appear within 300ms of trigger
+- [ ] **Animation Smoothness**: Slide-in animations are smooth
+- [ ] **Multiple Tabs**: Performance maintained with multiple tabs open
+- [ ] **Long Sessions**: No performance degradation over extended use
+
+#### Security & Privacy
+- [ ] **Data Isolation**: All data stored only in Chrome storage
+- [ ] **No External Calls**: No network requests made by extension
+- [ ] **Content Security**: No unsafe script execution
+- [ ] **Domain Data**: Only domain names stored, no URLs or content
+- [ ] **Todo Security**: Todos stored securely in local storage
+- [ ] **Settings Security**: Configuration data properly isolated
 
 #### Browser Compatibility
-- [ ] **Chrome Latest**: Works on current Chrome version
-- [ ] **Chrome Beta**: Compatible with upcoming Chrome versions
-- [ ] **Extension APIs**: Uses only documented Chrome extension APIs
+- [ ] **Chrome Stable**: Works on current stable Chrome version
+- [ ] **Chrome Beta**: Compatible with Chrome beta versions
+- [ ] **Extension APIs**: Only documented Chrome extension APIs used
+- [ ] **Manifest V3**: Properly implements Manifest V3 requirements
+- [ ] **Service Worker**: Background script functions as service worker
+- [ ] **Permissions**: Only necessary permissions requested
 
 ## Development
 
