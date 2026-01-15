@@ -231,8 +231,10 @@ function handleAddDomain() {
 
 // Validate domain format
 function isValidDomain(domain) {
-  const domainRegex = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/;
-  return domainRegex.test(domain);
+  // More comprehensive domain validation
+  // Allows: letters, numbers, hyphens, multiple TLDs, reasonable length
+  const domainRegex = /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+  return domainRegex.test(domain) && domain.length <= 253; // Max domain length per RFC
 }
 
 // Handle remove domain

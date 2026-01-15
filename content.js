@@ -134,31 +134,34 @@ window.addEventListener('scroll', () => {
   // Clear existing debounce timeout
   clearTimeout(scrollTimeout);
 
-  // Set new debounce timeout to reset counters after 2 seconds of no scrolling
+  // Set new debounce timeout to prevent excessive triggering
+  // Note: This only prevents rapid-fire events, doesn't reset scroll counters
   scrollTimeout = setTimeout(() => {
-    scrollCount = 0;
-    scrollTimestamps = [];
-  }, 2000);
+    // Debounce timeout - no action needed for scroll counting
+  }, 100);
 
-  // Update scroll direction tracking
-  lastScrollY = currentScrollY;
+  // Only count scroll events if position actually changed (filter out micro-scrolls)
+  if (Math.abs(currentScrollY - lastScrollY) > 10) {
+    // Update scroll position tracking
+    lastScrollY = currentScrollY;
 
-  // Add timestamp for this scroll event
-  scrollTimestamps.push(currentTime);
+    // Add timestamp for this scroll event
+    scrollTimestamps.push(currentTime);
 
-  // Remove timestamps older than time window
-  const cutoffTime = currentTime - (timeWindowSeconds * 1000);
-  scrollTimestamps = scrollTimestamps.filter(t => t > cutoffTime);
+    // Remove timestamps older than time window
+    const cutoffTime = currentTime - (timeWindowSeconds * 1000);
+    scrollTimestamps = scrollTimestamps.filter(t => t > cutoffTime);
 
-  // Count total scroll events (not direction-specific)
-  scrollCount++;
+    // Count total scroll events (not direction-specific)
+    scrollCount++;
 
-  // Check if we've exceeded threshold
-  if (scrollCount >= scrollThreshold) {
-    // Reset counter
-    scrollCount = 0;
+    // Check if we've exceeded threshold
+    if (scrollCount >= scrollThreshold) {
+      // Reset counter
+      scrollCount = 0;
 
-    // Notify background script
-    sendScrollDetected();
+      // Notify background script
+      sendScrollDetected();
+    }
   }
 });

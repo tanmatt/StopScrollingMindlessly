@@ -20,8 +20,15 @@ const defaultSettings = {
 
 // Initialize extension
 chrome.runtime.onInstalled.addListener(async () => {
-  const settings = await chrome.storage.local.get(defaultSettings);
-  if (!settings.scrollThreshold) {
+  try {
+    const result = await chrome.storage.local.get(['hasCompletedSetup']);
+    // Only set defaults if this is truly a fresh install (no setup flag exists)
+    if (result.hasCompletedSetup === undefined) {
+      await chrome.storage.local.set(defaultSettings);
+    }
+  } catch (error) {
+    // If storage access fails, set defaults anyway
+    console.error('Storage initialization error:', error);
     await chrome.storage.local.set(defaultSettings);
   }
 });

@@ -3,7 +3,6 @@
 const MAX_FREE_TODOS = 5;
 let todos = [];
 let isPremium = false;
-let currentTipIndex = 0;
 
 // Productivity tips (same as in background.js)
 const productivityTips = [
@@ -170,7 +169,6 @@ function saveTodos() {
 // Display random tip
 function displayRandomTip() {
   const randomIndex = Math.floor(Math.random() * productivityTips.length);
-  currentTipIndex = randomIndex;
   tipText.textContent = productivityTips[randomIndex];
 }
 
