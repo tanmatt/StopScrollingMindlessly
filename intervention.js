@@ -123,23 +123,16 @@ function renderTodos() {
 // Handle add todo
 function handleAddTodo() {
   const text = todoInput.value.trim();
-  
+
   if (!text) return;
-  
-  // Check limit for free users
-  const activeTodos = todos.filter(t => !t.completed);
-  if (!isPremium && activeTodos.length >= MAX_FREE_TODOS) {
-    alert('You\'ve reached the limit of 5 todos. Upgrade to Premium for unlimited todos!');
-    return;
-  }
-  
+
   const newTodo = {
     id: Date.now(),
     text: text,
     priority: 'medium',
     completed: false
   };
-  
+
   todos.push(newTodo);
   saveTodos();
   renderTodos();
