@@ -114,10 +114,10 @@ async function showInterventionPopup(domain) {
   // Get a random tip
   const tips = getProductivityTips();
   const randomTip = tips[Math.floor(Math.random() * tips.length)];
-  
+
   // Create intervention data
   const interventionData = {
-    todos: settings.todos.filter(t => !t.completed).slice(0, 5),
+    todos: settings.todos.filter(t => !t.completed),
     tip: randomTip,
     isPremium: settings.isPremium,
     currentDomain: domain,
