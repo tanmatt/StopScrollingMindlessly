@@ -1,6 +1,5 @@
 // Intervention Popup Script for Stop Scrolling Mindlessly
 
-const MAX_FREE_TODOS = 5;
 let todos = [];
 let isPremium = false;
 let interventionData = null;
