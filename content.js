@@ -78,7 +78,6 @@ setupIdleTimeout();
 window.addEventListener('load', initializeDomainData);
 window.addEventListener('beforeunload', () => {
   clearTimeout(idleTimeout);
-  clearTimeout(scrollTimeout);
 });
 
 // Update settings when changed
@@ -123,22 +122,12 @@ function sendScrollDetected() {
 }
 
 // Single comprehensive scroll event handler
-let scrollTimeout;
 window.addEventListener('scroll', () => {
   const currentTime = Date.now();
   const currentScrollY = window.scrollY;
 
   // Reset idle timeout on any scroll activity
   setupIdleTimeout();
-
-  // Clear existing debounce timeout
-  clearTimeout(scrollTimeout);
-
-  // Set new debounce timeout to prevent excessive triggering
-  // Note: This only prevents rapid-fire events, doesn't reset scroll counters
-  scrollTimeout = setTimeout(() => {
-    // Debounce timeout - no action needed for scroll counting
-  }, 100);
 
   // Only count scroll events if position actually changed (filter out micro-scrolls)
   if (Math.abs(currentScrollY - lastScrollY) > 10) {
