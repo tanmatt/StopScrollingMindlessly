@@ -8,6 +8,7 @@ let interventionData = null;
 // DOM Elements
 const todoList = document.getElementById('todoList');
 const todoInput = document.getElementById('todoInput');
+const prioritySelect = document.getElementById('prioritySelect');
 const addTodoBtn = document.getElementById('addTodoBtn');
 const tipText = document.getElementById('tipText');
 const adSection = document.getElementById('adSection');
@@ -105,6 +106,7 @@ function renderTodos() {
     item.innerHTML = `
       <div class="todo-checkbox${todo.completed ? ' checked' : ''}" data-index="${realIndex}"></div>
       <span class="todo-text">${escapeHtml(todo.text)}</span>
+      <span class="priority-badge priority-${todo.priority}">${getPriorityEmoji(todo.priority)}</span>
       <button class="todo-delete" data-index="${realIndex}">×</button>
     `;
     todoList.appendChild(item);
@@ -129,7 +131,7 @@ function handleAddTodo() {
   const newTodo = {
     id: Date.now(),
     text: text,
-    priority: 'medium',
+    priority: prioritySelect.value,
     completed: false
   };
 
@@ -208,4 +210,13 @@ function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
+}
+
+function getPriorityEmoji(priority) {
+  switch (priority) {
+    case 'high': return '🔴';
+    case 'medium': return '🟡';
+    case 'low': return '🟢';
+    default: return '';
+  }
 }
