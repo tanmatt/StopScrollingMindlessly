@@ -41,6 +41,13 @@ chrome.action.onClicked.addListener(async (tab) => {
   }
 });
 
+// Reset scroll count when switching tabs
+chrome.tabs.onActivated.addListener((activeInfo) => {
+  chrome.tabs.sendMessage(activeInfo.tabId, { type: "RESET_SCROLL_COUNT" }).catch(() => {
+    // Tab might not have content script loaded yet, ignore
+  });
+});
+
 // Handle messages from content scripts
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "SCROLL_DETECTED") {
