@@ -157,8 +157,9 @@ window.addEventListener('scroll', () => {
 
     // Check if we've exceeded threshold
     if (scrollCount >= scrollThreshold) {
-      // Reset counter
+      // Reset counter and timestamps
       scrollCount = 0;
+      scrollTimestamps = [];
 
       // Notify background script
       sendScrollDetected();
