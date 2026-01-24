@@ -16,6 +16,10 @@ const IDLE_RESET_MS = 5 * 60 * 1000;
 let scrollThreshold = 10;
 let timeWindowSeconds = 30;
 
+// Scroll rate tracking for overlay widget
+let scrollRateData = [];
+const SCROLL_RATE_WINDOW_MS = 60000; // 1 minute window for rate calculation
+
 // Initialize domain-specific data
 function initializeDomainData() {
   try {
@@ -121,6 +125,68 @@ function sendScrollDetected() {
   }
 }
 
+// Scroll rate calculation and overlay widget
+function calculateScrollRate() {
+  const now = Date.now();
+  const cutoffTime = now - SCROLL_RATE_WINDOW_MS;
+  
+  // Filter timestamps within the last minute
+  scrollRateData = scrollRateData.filter(t => t > cutoffTime);
+  
+  // Calculate scrolls per minute
+  const scrollRate = scrollRateData.length;
+  
+  // Update overlay widget
+  updateScrollRateOverlay(scrollRate);
+  
+  return scrollRate;
+}
+
+// Create and update scroll rate overlay widget
+function updateScrollRateOverlay(scrollRate) {
+  let widget = document.getElementById('scroll-rate-widget');
+  
+  if (!widget) {
+    widget = document.createElement('div');
+    widget.id = 'scroll-rate-widget';
+    widget.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      font-weight: bold;
+      z-index: 10000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: opacity 0.3s ease;
+    `;
+    document.body.appendChild(widget);
+  }
+  
+  widget.textContent = `Scrolls/min: ${scrollRate}`;
+  
+  // Auto-hide after 3 seconds of inactivity
+  clearTimeout(widget.hideTimeout);
+  widget.style.opacity = '1';
+  widget.hideTimeout = setTimeout(() => {
+    widget.style.opacity = '0';
+  }, 3000);
+}
+
+// Reset scroll rate data when domain changes
+function resetScrollRateData() {
+  scrollRateData = [];
+  const widget = document.getElementById('scroll-rate-widget');
+  if (widget) {
+    widget.remove();
+  }
+}
+
 // Single comprehensive scroll event handler
 window.addEventListener('scroll', () => {
   const currentTime = Date.now();
@@ -144,6 +210,12 @@ window.addEventListener('scroll', () => {
     // Count total scroll events (not direction-specific)
     scrollCount++;
 
+    // Track scroll rate for overlay widget
+    scrollRateData.push(currentTime);
+    
+    // Calculate and update scroll rate display
+    calculateScrollRate();
+
     // Check if we've exceeded threshold
     if (scrollCount >= scrollThreshold) {
       // Reset counter and timestamps
@@ -154,4 +226,32 @@ window.addEventListener('scroll', () => {
       sendScrollDetected();
     }
   }
+});
+
+// Update settings listener to also reset scroll rate data
+if (chrome.runtime && chrome.runtime.onMessage) {
+  chrome.runtime.onMessage.addListener((message) => {
+    if (message.type === "SETTINGS_UPDATED") {
+      scrollThreshold = validateScrollThreshold(message.settings.scrollThreshold) || 10;
+      timeWindowSeconds = validateTimeWindow(message.settings.timeWindowSeconds) || 30;
+    } else if (message.type === "RESET_SCROLL_COUNT") {
+      // Reset scroll counter when popup is shown
+      scrollCount = 0;
+      scrollTimestamps = [];
+      // Reset idle timeout since there's activity
+      setupIdleTimeout();
+    }
+  });
+}
+
+// Handle domain changes to reset scroll rate data
+window.addEventListener('load', () => {
+  resetForDomainChange();
+  resetScrollRateData();
+});
+
+// Handle SPA navigation
+window.addEventListener('popstate', () => {
+  resetForDomainChange();
+  resetScrollRateData();
 });
