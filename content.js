@@ -8,6 +8,8 @@ let scrollTimestamps = [];
 let lastScrollY = 0;
 let lastActivityTime = Date.now();
 let idleTimeout;
+let currentScrollUnitDistance = 0; // Accumulates scroll distance for the "half page" logic
+let interventionActive = false; // Flag to prevent re-triggering intervention while one is active
 
 // Idle reset after 5 minutes (300,000 ms)
 const IDLE_RESET_MS = 5 * 60 * 1000;
@@ -15,6 +17,9 @@ const IDLE_RESET_MS = 5 * 60 * 1000;
 // Default threshold - will be overridden by settings from background
 let scrollThreshold = 10;
 let timeWindowSeconds = 30;
+
+// Factor for what constitutes a "scroll unit" (e.g., 0.5 for half page)
+const SCROLL_UNIT_THRESHOLD_FACTOR = 0.5;
 
 // Scroll rate tracking for overlay widget
 let scrollRateData = [];
@@ -27,7 +32,10 @@ function initializeDomainData() {
     // Reset scroll data for new domain to ensure domain isolation
     scrollCount = 0;
     scrollTimestamps = [];
+    lastScrollY = window.scrollY; // Initialize lastScrollY for the new page
+    currentScrollUnitDistance = 0;
     lastActivityTime = Date.now();
+    interventionActive = false; // Reset intervention status for new domain
   } catch (e) {
     // Fallback for edge cases
     currentDomain = 'unknown';
@@ -41,7 +49,10 @@ function resetForDomainChange() {
     currentDomain = newDomain;
     scrollCount = 0;
     scrollTimestamps = [];
+    lastScrollY = window.scrollY; // Initialize lastScrollY for the new page
+    currentScrollUnitDistance = 0;
     lastActivityTime = Date.now();
+    interventionActive = false; // Reset intervention status for new domain
     setupIdleTimeout();
   }
 }
@@ -94,6 +105,8 @@ if (chrome.runtime && chrome.runtime.onMessage) {
       // Reset scroll counter when popup is shown
       scrollCount = 0;
       scrollTimestamps = [];
+      currentScrollUnitDistance = 0;
+      interventionActive = false; // Intervention is no longer active
       // Reset idle timeout since there's activity
       setupIdleTimeout();
     }
@@ -104,6 +117,7 @@ if (chrome.runtime && chrome.runtime.onMessage) {
 function resetScrollCountDueToIdle() {
   scrollCount = 0;
   scrollTimestamps = [];
+  currentScrollUnitDistance = 0;
   // Set up next idle timeout
   setupIdleTimeout();
 }
@@ -118,6 +132,7 @@ function setupIdleTimeout() {
 function sendScrollDetected() {
   try {
     if (chrome.runtime && chrome.runtime.id) {
+      interventionActive = true; // Set flag to prevent further triggers
       chrome.runtime.sendMessage({ type: "SCROLL_DETECTED" });
     }
   } catch (e) {
@@ -189,60 +204,58 @@ function resetScrollRateData() {
 
 // Single comprehensive scroll event handler
 window.addEventListener('scroll', () => {
+  if (interventionActive) {
+    // Do not count scrolls if an intervention is already active
+    return;
+  }
+
   const currentTime = Date.now();
   const currentScrollY = window.scrollY;
+  const deltaY = Math.abs(currentScrollY - lastScrollY);
 
-  // Reset idle timeout on any scroll activity
-  setupIdleTimeout();
+  // Only process if there's actual scroll movement
+  if (deltaY > 0) {
+    // Reset idle timeout on any scroll activity
+    setupIdleTimeout();
 
-  // Only count scroll events if position actually changed (filter out micro-scrolls)
-  if (Math.abs(currentScrollY - lastScrollY) > 10) {
-    // Update scroll position tracking
-    lastScrollY = currentScrollY;
-
-    // Add timestamp for this scroll event
+    // Add timestamp for this scroll event (for time window)
     scrollTimestamps.push(currentTime);
 
     // Remove timestamps older than time window
     const cutoffTime = currentTime - (timeWindowSeconds * 1000);
     scrollTimestamps = scrollTimestamps.filter(t => t > cutoffTime);
 
-    // Count total scroll events (not direction-specific)
-    scrollCount++;
+    // Accumulate scroll distance for the "half page" logic
+    currentScrollUnitDistance += deltaY;
 
-    // Track scroll rate for overlay widget
+    const viewportHeight = window.innerHeight;
+    const scrollUnitThreshold = viewportHeight * SCROLL_UNIT_THRESHOLD_FACTOR;
+
+    // If accumulated scroll distance exceeds half page, count it as a "scroll unit"
+    if (currentScrollUnitDistance >= scrollUnitThreshold) {
+        scrollCount++;
+        currentScrollUnitDistance = 0; // Reset for the next unit
+    }
+
+    // Update lastScrollY for the next delta calculation
+    lastScrollY = currentScrollY;
+
+    // Track scroll rate for overlay widget (this should still count every scroll event)
     scrollRateData.push(currentTime);
-    
-    // Calculate and update scroll rate display
     calculateScrollRate();
 
-    // Check if we've exceeded threshold
+    // Check if we've exceeded threshold for intervention
     if (scrollCount >= scrollThreshold) {
-      // Reset counter and timestamps
+      // Reset counter and timestamps for intervention logic
       scrollCount = 0;
       scrollTimestamps = [];
+      currentScrollUnitDistance = 0; // Also reset this
 
       // Notify background script
       sendScrollDetected();
     }
   }
 });
-
-// Update settings listener to also reset scroll rate data
-if (chrome.runtime && chrome.runtime.onMessage) {
-  chrome.runtime.onMessage.addListener((message) => {
-    if (message.type === "SETTINGS_UPDATED") {
-      scrollThreshold = validateScrollThreshold(message.settings.scrollThreshold) || 10;
-      timeWindowSeconds = validateTimeWindow(message.settings.timeWindowSeconds) || 30;
-    } else if (message.type === "RESET_SCROLL_COUNT") {
-      // Reset scroll counter when popup is shown
-      scrollCount = 0;
-      scrollTimestamps = [];
-      // Reset idle timeout since there's activity
-      setupIdleTimeout();
-    }
-  });
-}
 
 // Handle domain changes to reset scroll rate data
 window.addEventListener('load', () => {
