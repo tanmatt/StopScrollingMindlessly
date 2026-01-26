@@ -65,6 +65,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (sender.tab?.id) {
       chrome.tabs.sendMessage(sender.tab.id, { type: "RESET_SCROLL_COUNT" });
     }
+  } else if (message.type === "OPEN_OPTIONS_PAGE") {
+    chrome.runtime.openOptionsPage();
   }
   return true;
 });

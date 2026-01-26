@@ -24,7 +24,7 @@ const scrollsPerMinuteValue = document.getElementById('scrollsPerMinuteValue');
 document.addEventListener('DOMContentLoaded', async () => {
   await loadDataFromUrl();
   await loadSettings();
-  renderTodos();
+  renderTodos(); // Ensure renderTodos is called after data is loaded
   updateAdVisibility();
   setupEventListeners();
 });
@@ -97,7 +97,8 @@ function setupEventListeners() {
 
 // Open settings page
 function openSettings() {
-  chrome.runtime.openOptionsPage();
+  console.log("Settings link clicked from intervention.");
+  chrome.runtime.sendMessage({ type: "OPEN_OPTIONS_PAGE" });
 }
 
 // Handle add todo

@@ -211,7 +211,7 @@ window.addEventListener('scroll', () => {
 
   const currentTime = Date.now();
   const currentScrollY = window.scrollY;
-  const deltaY = Math.abs(currentScrollY - lastScrollY);
+  const deltaY = currentScrollY - lastScrollY;
 
   // Only process if there's actual scroll movement
   if (deltaY > 0) {
@@ -254,6 +254,9 @@ window.addEventListener('scroll', () => {
       // Notify background script
       sendScrollDetected();
     }
+  } else {
+    // User is scrolling up, reset lastScrollY to the current position
+    lastScrollY = currentScrollY;
   }
 });
 
