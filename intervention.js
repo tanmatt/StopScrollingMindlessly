@@ -3,6 +3,9 @@
 let todos = [];
 let isPremium = false;
 let interventionData = null;
+let scrollTimestamps = [];
+let spmUpdateInterval;
+let spmHideTimeout;
 
 // DOM Elements
 const todoList = document.getElementById('todoList');
@@ -13,6 +16,9 @@ const tipText = document.getElementById('tipText');
 const adSection = document.getElementById('adSection');
 const modalCloseBtn = document.getElementById('modalCloseBtn');
 const disableDomainBtn = document.getElementById('disableDomainBtn');
+const settingsLink = document.getElementById('settingsLink');
+const scrollsPerMinuteOverlay = document.getElementById('scrollsPerMinuteOverlay');
+const scrollsPerMinuteValue = document.getElementById('scrollsPerMinuteValue');
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
@@ -83,42 +89,15 @@ function setupEventListeners() {
   });
   modalCloseBtn.addEventListener('click', closeWindow);
   disableDomainBtn.addEventListener('click', handleDisableDomain);
+  settingsLink.addEventListener('click', openSettings);
+
+  // Add scroll event listener for SPM
+  window.addEventListener('scroll', handleScroll);
 }
 
-// Render todos
-function renderTodos() {
-  todoList.innerHTML = '';
-  
-  // Sort: incomplete first, then by priority
-  const sortedTodos = [...todos].sort((a, b) => {
-    if (a.completed === b.completed) {
-      const priorityOrder = { high: 0, medium: 1, low: 2 };
-      return priorityOrder[a.priority] - priorityOrder[b.priority];
-    }
-    return a.completed ? 1 : -1;
-  });
-  
-  sortedTodos.forEach((todo) => {
-    const realIndex = todos.findIndex(t => t.id === todo.id);
-    const item = document.createElement('div');
-    item.className = `todo-item${todo.completed ? ' completed' : ''}`;
-    item.innerHTML = `
-      <div class="todo-checkbox${todo.completed ? ' checked' : ''}" data-index="${realIndex}"></div>
-      <span class="todo-text">${escapeHtml(todo.text)}</span>
-      <span class="priority-badge priority-${todo.priority}">${getPriorityEmoji(todo.priority)}</span>
-      <button class="todo-delete" data-index="${realIndex}">×</button>
-    `;
-    todoList.appendChild(item);
-  });
-  
-  // Add event listeners
-  document.querySelectorAll('.todo-checkbox').forEach(checkbox => {
-    checkbox.addEventListener('click', handleToggleTodo);
-  });
-  
-  document.querySelectorAll('.todo-delete').forEach(btn => {
-    btn.addEventListener('click', handleDeleteTodo);
-  });
+// Open settings page
+function openSettings() {
+  chrome.runtime.openOptionsPage();
 }
 
 // Handle add todo
@@ -217,5 +196,40 @@ function getPriorityEmoji(priority) {
     case 'medium': return '🟡';
     case 'low': return '🟢';
     default: return '';
+  }
+}
+
+// Scrolls Per Minute (SPM) Overlay Logic
+function handleScroll() {
+  const now = Date.now();
+  scrollTimestamps.push(now);
+
+  // Remove timestamps older than 1 minute (60 seconds)
+  const oneMinuteAgo = now - 60 * 1000;
+  while (scrollTimestamps.length > 0 && scrollTimestamps[0] < oneMinuteAgo) {
+    scrollTimestamps.shift();
+  }
+
+  // Show overlay and update SPM
+  if (scrollsPerMinuteOverlay.style.display === 'none' || scrollsPerMinuteOverlay.style.display === '') {
+    scrollsPerMinuteOverlay.style.display = 'block';
+    startSpmUpdateInterval();
+  }
+
+  // Reset hide timeout
+  clearTimeout(spmHideTimeout);
+  spmHideTimeout = setTimeout(() => {
+    scrollsPerMinuteOverlay.style.display = 'none';
+    clearInterval(spmUpdateInterval);
+  }, 1000); // Hide after 1 second of no scrolling
+}
+
+function updateSpmValue() {
+  scrollsPerMinuteValue.textContent = scrollTimestamps.length;
+}
+
+function startSpmUpdateInterval() {
+  if (!spmUpdateInterval) {
+    spmUpdateInterval = setInterval(updateSpmValue, 200); // Update every 200ms
   }
 }
