@@ -99,6 +99,7 @@ function setupEventListeners() {
 function openSettings() {
   console.log("Settings link clicked from intervention.");
   chrome.runtime.sendMessage({ type: "OPEN_OPTIONS_PAGE" });
+  window.close();
 }
 
 // Handle add todo
