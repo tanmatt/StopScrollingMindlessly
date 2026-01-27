@@ -43,6 +43,16 @@ A Chrome extension that helps you stop mindless scrolling by showing an interven
 4. Select the `Stop Scrolling Mindlessly` folder
 5. The extension is now installed!
 
+## Packaging for Chrome Web Store
+
+To create a zip file for uploading to the Chrome Web Store, run the following command in your terminal:
+
+```bash
+zip -r StopScrollingMindlessly.zip . -x "node_modules/*" "tests/*" "screenshots/*" "test-reports/*" "package-lock.json" ".git/*" ".gitignore" ".DS_Store" "generate-icons.py" "package_extension.py"
+```
+
+This command creates `StopScrollingMindlessly.zip` containing all necessary files while excluding development artifacts.
+
 ## Usage
 
 ### First-Time Setup
