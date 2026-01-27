@@ -382,7 +382,7 @@ body {
   font-size: 24px;
   padding: 8px 12px;
   border-radius: 8px;
-  z-index: 10000; /* Ensure it's on top */
+  z-index: 2147483647; /* Max z-index */
   pointer-events: none; /* Allow clicks to pass through */
   display: none; /* Hidden by default, shown when active */
 }

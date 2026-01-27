@@ -175,7 +175,7 @@ function updateScrollRateOverlay(scrollRate) {
       font-family: Arial, sans-serif;
       font-size: 14px;
       font-weight: bold;
-      z-index: 10000;
+      z-index: 2147483647;
       box-shadow: 0 2px 10px rgba(0,0,0,0.3);
       border: 1px solid rgba(255,255,255,0.2);
       transition: opacity 0.3s ease;

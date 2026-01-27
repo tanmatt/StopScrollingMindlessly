@@ -1,43 +1,59 @@
-// Test validation functions from content.js
-function validateScrollThreshold(value) {
-  const num = parseInt(value);
-  return isNaN(num) ? 10 : Math.max(1, Math.min(100, num));
-}
+const setup = require('./setup');
 
-function validateTimeWindow(value) {
-  const num = parseInt(value);
-  return isNaN(num) ? 30 : Math.max(5, Math.min(300, num));
-}
+describe('Content Script Logic', () => {
+  let scrollCount = 0;
+  let currentScrollUnitDistance = 0;
+  let lastScrollY = 0;
+  const SCROLL_UNIT_THRESHOLD_FACTOR = 0.5;
+  const viewportHeight = 1000; // Mock viewport height
+  const scrollUnitThreshold = viewportHeight * SCROLL_UNIT_THRESHOLD_FACTOR;
 
-describe('Content Script Tests', () => {
-  describe('validateScrollThreshold', () => {
-    test('returns default value for invalid input', () => {
-      expect(validateScrollThreshold('invalid')).toBe(10);
-      expect(validateScrollThreshold(null)).toBe(10);
-      expect(validateScrollThreshold(undefined)).toBe(10);
-    });
-
-    test('clamps values within range', () => {
-      expect(validateScrollThreshold(0)).toBe(1);
-      expect(validateScrollThreshold(50)).toBe(50);
-      expect(validateScrollThreshold(150)).toBe(100);
-    });
-
-    test('handles string numbers', () => {
-      expect(validateScrollThreshold('25')).toBe(25);
-    });
+  beforeEach(() => {
+    setup();
+    scrollCount = 0;
+    currentScrollUnitDistance = 0;
+    lastScrollY = 0;
+    global.window.innerHeight = viewportHeight;
   });
 
-  describe('validateTimeWindow', () => {
-    test('returns default value for invalid input', () => {
-      expect(validateTimeWindow('invalid')).toBe(30);
-      expect(validateTimeWindow(null)).toBe(30);
-    });
+  test('T03: Scroll Direction - Down', () => {
+    const currentScrollY = 100;
+    const deltaY = currentScrollY - lastScrollY; // 100 - 0 = 100 (positive)
 
-    test('clamps values within range', () => {
-      expect(validateTimeWindow(3)).toBe(5);
-      expect(validateTimeWindow(60)).toBe(60);
-      expect(validateTimeWindow(400)).toBe(300);
-    });
+    if (deltaY > 0) {
+      currentScrollUnitDistance += deltaY;
+    }
+
+    expect(currentScrollUnitDistance).toBe(100);
+  });
+
+  test('T03: Scroll Direction - Up', () => {
+    lastScrollY = 200;
+    const currentScrollY = 100;
+    const deltaY = currentScrollY - lastScrollY; // 100 - 200 = -100 (negative)
+
+    if (deltaY > 0) {
+      currentScrollUnitDistance += deltaY;
+    }
+
+    expect(currentScrollUnitDistance).toBe(0); // Should not increase
+  });
+
+  test('T16: SPM Overlay Logic', () => {
+    let scrollTimestamps = [];
+    const now = Date.now();
+
+    // Simulate scrolls (chronological order: oldest first)
+    scrollTimestamps.push(now - 61000); // Older than 1 minute
+    scrollTimestamps.push(now - 1000);
+    scrollTimestamps.push(now);
+
+    // Filter logic
+    const oneMinuteAgo = now - 60 * 1000;
+    while (scrollTimestamps.length > 0 && scrollTimestamps[0] < oneMinuteAgo) {
+      scrollTimestamps.shift();
+    }
+
+    expect(scrollTimestamps.length).toBe(2);
   });
 });
