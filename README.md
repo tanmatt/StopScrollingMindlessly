@@ -7,9 +7,14 @@ A Chrome extension that helps you stop mindless scrolling by showing an interven
 ### 🛑 Smart Scrolling Detection
 - **Gentle defaults**: 20 scrolls in 45 seconds (less sensitive)
 - **Intelligent reset**: Scroll counts reset when popup appears or after 5 minutes of idle time
+- **Half-Page Logic**: Counts a "scroll" only when you've navigated at least half a page height
+- **Direction Aware**: Only counts downward scrolling to avoid false positives when reading back up
 - **First-time setup wizard**: Choose your preferred sensitivity level
 - **Three modes**: Relaxed, Balanced, or Strict
-- All settings configurable in options
+
+### 📊 Real-Time Feedback
+- **Scrolls Per Minute (SPM) Overlay**: A subtle overlay appears when you start scrolling to show your current speed
+- **Visual Cues**: Helps you become aware of your scrolling behavior in real-time
 
 ### 📝 Todo Management (FREE & Unlimited)
 - Add, complete, and delete TODOs

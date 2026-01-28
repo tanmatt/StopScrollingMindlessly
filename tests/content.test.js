@@ -6,7 +6,7 @@ describe('Content Script Logic', () => {
   let lastScrollY = 0;
   const SCROLL_UNIT_THRESHOLD_FACTOR = 0.5;
   const viewportHeight = 1000; // Mock viewport height
-  const scrollUnitThreshold = viewportHeight * SCROLL_UNIT_THRESHOLD_FACTOR;
+  const scrollUnitThreshold = viewportHeight * SCROLL_UNIT_THRESHOLD_FACTOR; // 500
 
   beforeEach(() => {
     setup();
@@ -37,6 +37,38 @@ describe('Content Script Logic', () => {
     }
 
     expect(currentScrollUnitDistance).toBe(0); // Should not increase
+  });
+
+  test('Half Page Scroll Logic', () => {
+    // Threshold is 500
+
+    // Scroll 1: 300px down
+    let currentScrollY = 300;
+    let deltaY = currentScrollY - lastScrollY;
+    if (deltaY > 0) currentScrollUnitDistance += deltaY;
+    lastScrollY = currentScrollY;
+
+    // Check: Not yet a scroll count
+    if (currentScrollUnitDistance >= scrollUnitThreshold) {
+      scrollCount++;
+      currentScrollUnitDistance = 0;
+    }
+    expect(scrollCount).toBe(0);
+    expect(currentScrollUnitDistance).toBe(300);
+
+    // Scroll 2: Another 300px down (Total 600px > 500px)
+    currentScrollY = 600;
+    deltaY = currentScrollY - lastScrollY;
+    if (deltaY > 0) currentScrollUnitDistance += deltaY;
+    lastScrollY = currentScrollY;
+
+    // Check: Should increment scroll count
+    if (currentScrollUnitDistance >= scrollUnitThreshold) {
+      scrollCount++;
+      currentScrollUnitDistance = 0;
+    }
+    expect(scrollCount).toBe(1);
+    expect(currentScrollUnitDistance).toBe(0);
   });
 
   test('T16: SPM Overlay Logic', () => {

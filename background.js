@@ -73,18 +73,18 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 async function handleScrollDetected(url, tabId) {
   if (!url) return;
-  
+
   const domain = new URL(url).hostname.replace('www.', '');
   const settings = await getSettings();
-  
+
   // Check if domain is ignored
   if (settings.ignoredDomains.includes(domain)) {
     return;
   }
-  
+
   // Show the intervention popup
   const popupShown = await showInterventionPopup(domain);
-  
+
   // Reset scroll count in the tab after showing popup
   if (popupShown && tabId) {
     try {
@@ -97,12 +97,12 @@ async function handleScrollDetected(url, tabId) {
 
 async function showInterventionPopup(domain) {
   const currentTime = Date.now();
-  
+
   // Check cooldown to prevent rapid re-showing
   if (currentTime - lastPopupTime < POPUP_COOLDOWN_MS) {
     return false;
   }
-  
+
   // Check if popup is already open
   if (popupWindowId) {
     try {
@@ -117,9 +117,9 @@ async function showInterventionPopup(domain) {
       popupWindowId = null;
     }
   }
-  
+
   const settings = await getSettings();
-  
+
   // Get a random tip
   const tips = getProductivityTips();
   const randomTip = tips[Math.floor(Math.random() * tips.length)];

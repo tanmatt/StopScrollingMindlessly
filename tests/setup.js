@@ -3,8 +3,8 @@ module.exports = function() {
   global.chrome = {
     storage: {
       local: {
-        get: jest.fn((keys, callback) => callback({})),
-        set: jest.fn((items, callback) => callback && callback()),
+        get: jest.fn((keys) => Promise.resolve({})),
+        set: jest.fn((items) => Promise.resolve()),
       },
     },
     runtime: {
@@ -12,11 +12,17 @@ module.exports = function() {
       onMessage: {
         addListener: jest.fn(),
       },
+      onInstalled: {
+        addListener: jest.fn(),
+      },
       openOptionsPage: jest.fn(),
     },
     tabs: {
       query: jest.fn(),
-      sendMessage: jest.fn(),
+      sendMessage: jest.fn(() => Promise.resolve()),
+      onActivated: {
+        addListener: jest.fn(),
+      },
     },
     action: {
       onClicked: {
