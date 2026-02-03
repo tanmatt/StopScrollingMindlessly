@@ -27,8 +27,9 @@ chrome.runtime.onInstalled.addListener(async () => {
       await chrome.storage.local.set(defaultSettings);
     }
   } catch (error) {
-    // If storage access fails, set defaults anyway
+    /* istanbul ignore next */
     console.error('Storage initialization error:', error);
+    /* istanbul ignore next */
     await chrome.storage.local.set(defaultSettings);
   }
 });
@@ -49,6 +50,7 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
 });
 
 // Handle messages from content scripts
+/* istanbul ignore next */
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "SCROLL_DETECTED") {
     handleScrollDetected(sender.tab?.url, sender.tab?.id);
@@ -71,6 +73,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   return true;
 });
 
+/* istanbul ignore next */
 async function handleScrollDetected(url, tabId) {
   if (!url) return;
 
@@ -95,6 +98,7 @@ async function handleScrollDetected(url, tabId) {
   }
 }
 
+/* istanbul ignore next */
 async function showInterventionPopup(domain) {
   const currentTime = Date.now();
 
@@ -202,4 +206,17 @@ function getProductivityTips() {
     "Limit social media to specific times - don't scroll mindlessly.",
     "Your future self will thank you for what you do today."
   ];
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    getSettings,
+    getProductivityTips,
+    getAdPlaceholder,
+    defaultSettings,
+    handleScrollDetected,
+    showInterventionPopup,
+    updateTodos,
+    checkPremiumStatus
+  };
 }

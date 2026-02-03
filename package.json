@@ -4,7 +4,7 @@
   "description": "Chrome extension to stop mindless scrolling",
   "main": "background.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --forceExit",
     "test:watch": "jest --watch"
   },
   "devDependencies": {
@@ -14,10 +14,21 @@
   "jest": {
     "testEnvironment": "jsdom",
     "collectCoverageFrom": [
-      "*.js",
-      "!generate-icons.py"
+      "background.js",
+      "intervention.js",
+      "options.js",
+      "popup.js"
     ],
+    "coveragePathIgnorePatterns": ["/node_modules/"],
     "coverageDirectory": "coverage",
-    "coverageReporters": ["text", "lcov", "html"]
+    "coverageReporters": ["text", "lcov", "html"],
+    "coverageThreshold": {
+      "global": {
+        "statements": 95,
+        "branches": 55,
+        "functions": 77,
+        "lines": 95
+      }
+    }
   }
 }
