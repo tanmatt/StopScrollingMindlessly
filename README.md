@@ -102,11 +102,12 @@ When you scroll mindlessly, a friendly popup appears with:
 - **"Time for a quick break?"** - friendly message
 - **Your current TODOs** - with add/complete/delete functionality
 - **Productivity tip** - immediately visible at the top
-- **Close button (X)** - in the top-right corner to dismiss
+- **Close button (X)** - in the top-right corner to dismiss (also: click overlay or press ESC)
 - **"Disable on this site"** - one-click button to stop popups on current domain
 
 **Smart Reset Behavior:**
 - Scroll counts reset when popup appears
+- Scroll counts reset after 30 seconds of no scrolling
 - Scroll counts also reset after 5 minutes of idle time
 - This prevents over-intervention while maintaining effectiveness
 
@@ -151,7 +152,7 @@ Stop Scrolling Mindlessly/
 - [ ] **Popup Positioning**: Modal should appear at top of viewport with overlay background
 - [ ] **Close Button**: X button in top-right corner must close popup and reset scroll count
 - [ ] **Domain Exclusion**: "Disable on this site" button must add current domain to excluded domains list
-- [ ] **Scroll Reset**: Scroll count must reset when popup appears and after 2 seconds of no scrolling
+- [ ] **Scroll Reset**: Scroll count must reset when popup appears and after 30 seconds of no scrolling
 - [ ] **Idle Reset**: Scroll count must reset after 5 minutes of no scrolling activity
 - [ ] **Domain Isolation**: Scroll count must be specific to each domain and not carry over between tabs/sites
 - [ ] **Cooldown Period**: Extension should not show multiple popups within 5 seconds
@@ -293,7 +294,7 @@ Stop Scrolling Mindlessly/
 #### Reset & Recovery
 - [ ] **Scroll Reset on Popup**: Scroll count resets when intervention popup appears
 - [ ] **Idle Reset**: Scroll count resets after 5 minutes of no activity
-- [ ] **Short Reset**: Scroll count resets after 2 seconds of no scrolling
+- [ ] **Short Reset**: Scroll count resets after 30 seconds of no scrolling
 - [ ] **Tab Switch Reset**: Scroll count maintains per tab
 - [ ] **Domain Change Reset**: Scroll count resets when navigating to different domain
 - [ ] **Cooldown Period**: Multiple popups prevented within 5 seconds

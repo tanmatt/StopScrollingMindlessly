@@ -72,7 +72,7 @@ module.exports = function() {
     <div id="adSection"></div>
     <button id="modalCloseBtn"></button>
     <button id="disableDomainBtn"></button>
-    <div id="scrollsPerMinuteOverlay"></div>
-    <span id="scrollsPerMinuteValue"></span>
+    <div id="overlay"></div>
   `;
+  global.window.close = jest.fn();
 };
