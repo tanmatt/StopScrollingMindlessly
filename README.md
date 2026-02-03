@@ -2,6 +2,25 @@
 
 A Chrome extension that helps you stop mindless scrolling by showing an intervention popup when you scroll too much on any website.
 
+## Chrome Web Store Description
+
+**Summary:**
+Stop mindless scrolling with smart intervention popups, productivity tips, and TODOs.
+
+**Detailed Description:**
+Do you find yourself scrolling endlessly on social media, forgetting why you opened the tab in the first place?
+
+"Stop Scrolling Mindlessly" is your intelligent scrolling guardian. It detects when you're scrolling too much and gently intervenes.
+
+**Key Features:**
+*   **Smart Interventions:** A friendly popup appears when you scroll excessively (customizable sensitivity).
+*   **Productivity Tips:** Get a random productivity tip with every intervention to help you refocus.
+*   **Built-in TODO List:** Manage your tasks directly within the extension to remind you of your priorities.
+*   **Scrolls Per Minute (SPM) Overlay:** See your scrolling speed in real-time to build awareness.
+*   **Domain Control:** Easily disable the extension on specific sites where you *need* to scroll.
+
+**Privacy:** All data is stored locally. No tracking.
+
 ## ✨ Features
 
 ### 🛑 Smart Scrolling Detection
