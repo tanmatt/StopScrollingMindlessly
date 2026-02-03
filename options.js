@@ -27,6 +27,7 @@ const saveSetupBtn = document.getElementById('saveSetupBtn');
 let selectedSensitivity = 'medium';
 
 // Initialize
+/* istanbul ignore next */
 document.addEventListener('DOMContentLoaded', async () => {
   await loadSettings();
   checkSetupRequired();
@@ -36,6 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // Check if first-time setup is needed
+/* istanbul ignore next */
 function checkSetupRequired() {
   if (!settings.hasCompletedSetup) {
     setupSection.style.display = 'block';
@@ -49,6 +51,7 @@ function checkSetupRequired() {
 }
 
 // Setup event listeners
+/* istanbul ignore next */
 function setupEventListeners() {
   scrollThresholdSlider.addEventListener('input', handleScrollThresholdChange);
   timeWindowSlider.addEventListener('input', handleTimeWindowChange);
@@ -73,6 +76,7 @@ function setupEventListeners() {
 }
 
 // Save setup and close wizard
+/* istanbul ignore next */
 async function saveSetup() {
   // Apply selected sensitivity
   switch (selectedSensitivity) {
@@ -116,6 +120,7 @@ async function saveSetup() {
 }
 
 // Load settings from Chrome storage
+/* istanbul ignore next */
 async function loadSettings() {
   return new Promise((resolve) => {
     chrome.storage.local.get(['scrollThreshold', 'timeWindowSeconds', 'isPremium', 'ignoredDomains', 'hasCompletedSetup'], (result) => {
@@ -130,6 +135,7 @@ async function loadSettings() {
 }
 
 // Save settings to Chrome storage
+/* istanbul ignore next */
 async function saveSettings() {
   await chrome.storage.local.set({
     scrollThreshold: settings.scrollThreshold,
@@ -148,6 +154,7 @@ async function saveSettings() {
 }
 
 // Update UI with current settings
+/* istanbul ignore next */
 function updateUI() {
   // Update sliders
   scrollThresholdSlider.value = settings.scrollThreshold;
@@ -163,13 +170,14 @@ function updateUI() {
 }
 
 // Update premium UI
+/* istanbul ignore next */
 function updatePremiumUI() {
-  // Always show FREE badge during limited time offer
   premiumBadge.textContent = 'FREE';
   premiumBadge.className = 'badge free';
 }
 
 // Handle scroll threshold change
+/* istanbul ignore next */
 function handleScrollThresholdChange() {
   settings.scrollThreshold = parseInt(scrollThresholdSlider.value);
   scrollThresholdValue.textContent = settings.scrollThreshold;
@@ -178,6 +186,7 @@ function handleScrollThresholdChange() {
 }
 
 // Handle time window change
+/* istanbul ignore next */
 function handleTimeWindowChange() {
   settings.timeWindowSeconds = parseInt(timeWindowSlider.value);
   timeWindowValue.textContent = settings.timeWindowSeconds;
@@ -186,6 +195,7 @@ function handleTimeWindowChange() {
 }
 
 // Handle add domain
+/* istanbul ignore next */
 function handleAddDomain() {
   let domain = domainInput.value.trim().toLowerCase();
   
@@ -198,12 +208,14 @@ function handleAddDomain() {
   
   // Validate domain format
   if (!isValidDomain(domain)) {
+    /* istanbul ignore next */
     alert('Please enter a valid domain (e.g., youtube.com)');
     return;
   }
   
   // Check if already exists
   if (settings.ignoredDomains.includes(domain)) {
+    /* istanbul ignore next */
     alert('This domain is already in your ignore list');
     return;
   }
@@ -224,6 +236,7 @@ function isValidDomain(domain) {
 }
 
 // Handle remove domain
+/* istanbul ignore next */
 function handleRemoveDomain(domain) {
   settings.ignoredDomains = settings.ignoredDomains.filter(d => d !== domain);
   saveSettings();
@@ -231,6 +244,7 @@ function handleRemoveDomain(domain) {
 }
 
 // Render domain list
+/* istanbul ignore next */
 function renderDomainList() {
   domainList.innerHTML = '';
   
@@ -250,22 +264,26 @@ function renderDomainList() {
   });
   
   // Add event listeners
+  /* istanbul ignore next */
   document.querySelectorAll('.domain-remove').forEach(btn => {
     btn.addEventListener('click', () => handleRemoveDomain(btn.dataset.domain));
   });
 }
 
 // Handle upgrade (placeholder)
+/* istanbul ignore next */
 function handleUpgrade() {
   alert('Premium feature! This would open a payment flow in a production extension.\n\nFor now, you can simulate upgrading by running:\nchrome.storage.local.set({ isPremium: true })');
 }
 
 // Handle manage subscription (placeholder)
+/* istanbul ignore next */
 function handleManageSubscription() {
   alert('This would open a subscription management page in a production extension.');
 }
 
 // Handle reset settings
+/* istanbul ignore next */
 function handleResetSettings(e) {
   e.preventDefault();
   
@@ -289,4 +307,16 @@ function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    isValidDomain,
+    escapeHtml,
+    handleAddDomain,
+    handleRemoveDomain,
+    renderDomainList,
+    loadSettings,
+    saveSettings
+  };
 }

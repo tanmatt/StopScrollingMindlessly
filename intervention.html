@@ -7,12 +7,12 @@
   <link rel="stylesheet" href="intervention.css">
 </head>
 <body>
-  <div class="intervention-overlay" id="overlay">
+  <div class="intervention-overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="interventionHeading">
     <div class="intervention-modal">
-      <button class="close-btn" id="modalCloseBtn" title="Close">×</button>
+      <button class="close-btn" id="modalCloseBtn" title="Close" aria-label="Close intervention">×</button>
       <div class="intervention-header">
         <div class="warning-icon">⏸️</div>
-        <h1>Time for a quick break?</h1>
+        <h1 id="interventionHeading">Time for a quick break?</h1>
         <p class="subtitle">You were scrolling for a while. Check your priorities!</p>
         <a href="#" id="settingsLink" class="settings-link" title="Settings">⚙️</a>
       </div>
@@ -54,9 +54,6 @@
         </button>
       </div>
     </div>
-  </div>
-  <div id="scrollsPerMinuteOverlay" class="scrolls-per-minute-overlay">
-    <span id="scrollsPerMinuteValue">0</span> SPM
   </div>
 
   <script src="intervention.js"></script>

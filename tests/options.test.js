@@ -1,6 +1,7 @@
 const setup = require('./setup');
 
 describe('Options UI', () => {
+  let options;
   let settings = {
     scrollThreshold: 20,
     timeWindowSeconds: 45,
@@ -15,6 +16,8 @@ describe('Options UI', () => {
       ignoredDomains: []
     };
     jest.clearAllMocks();
+    jest.resetModules();
+    options = require('../options.js');
   });
 
   test('T07: Scroll Threshold', () => {
@@ -65,15 +68,43 @@ describe('Options UI', () => {
 
   test('T11: Reset Settings', () => {
     settings.scrollThreshold = 50;
-
-    // Simulate reset
     settings = {
       scrollThreshold: 20,
       timeWindowSeconds: 45,
       ignoredDomains: []
     };
     chrome.storage.local.set(settings);
-
     expect(settings.scrollThreshold).toBe(20);
+  });
+
+  test('isValidDomain accepts valid domains', () => {
+    expect(options.isValidDomain('example.com')).toBe(true);
+    expect(options.isValidDomain('sub.example.co.uk')).toBe(true);
+  });
+
+  test('isValidDomain rejects invalid domains', () => {
+    expect(options.isValidDomain('')).toBe(false);
+    expect(options.isValidDomain('invalid..com')).toBe(false);
+  });
+
+  test('escapeHtml escapes special chars', () => {
+    expect(options.escapeHtml('&')).toBe('&amp;');
+  });
+
+  test('handleAddDomain adds valid domain', () => {
+    const domainInput = document.getElementById('domainInput');
+    domainInput.value = 'youtube.com';
+    options.handleAddDomain();
+    expect(chrome.storage.local.set).toHaveBeenCalled();
+  });
+
+  test('handleRemoveDomain removes domain', () => {
+    options.handleRemoveDomain('example.com');
+    expect(chrome.storage.local.set).toHaveBeenCalled();
+  });
+
+  test('renderDomainList renders list', () => {
+    options.renderDomainList();
+    expect(document.getElementById('domainList')).toBeTruthy();
   });
 });

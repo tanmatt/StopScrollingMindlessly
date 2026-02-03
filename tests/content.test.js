@@ -4,9 +4,10 @@ describe('Content Script Logic', () => {
   let scrollCount = 0;
   let currentScrollUnitDistance = 0;
   let lastScrollY = 0;
+  let content;
   const SCROLL_UNIT_THRESHOLD_FACTOR = 0.5;
-  const viewportHeight = 1000; // Mock viewport height
-  const scrollUnitThreshold = viewportHeight * SCROLL_UNIT_THRESHOLD_FACTOR; // 500
+  const viewportHeight = 1000;
+  const scrollUnitThreshold = viewportHeight * SCROLL_UNIT_THRESHOLD_FACTOR;
 
   beforeEach(() => {
     setup();
@@ -14,6 +15,10 @@ describe('Content Script Logic', () => {
     currentScrollUnitDistance = 0;
     lastScrollY = 0;
     global.window.innerHeight = viewportHeight;
+    global.window.scrollY = 0;
+    global.window.location = { hostname: 'example.com' };
+    jest.resetModules();
+    content = require('../content.js');
   });
 
   test('T03: Scroll Direction - Down', () => {
@@ -87,5 +92,47 @@ describe('Content Script Logic', () => {
     }
 
     expect(scrollTimestamps.length).toBe(2);
+  });
+
+  test('validateScrollThreshold clamps to 1-100', () => {
+    expect(content.validateScrollThreshold(15)).toBe(15);
+    expect(content.validateScrollThreshold(0)).toBe(1);
+    expect(content.validateScrollThreshold(200)).toBe(100);
+    expect(content.validateScrollThreshold('x')).toBe(10);
+  });
+
+  test('validateTimeWindow clamps to 5-300', () => {
+    expect(content.validateTimeWindow(45)).toBe(45);
+    expect(content.validateTimeWindow(1)).toBe(5);
+    expect(content.validateTimeWindow(400)).toBe(300);
+  });
+
+  test('NO_SCROLL_RESET_MS is 30 seconds', () => {
+    expect(content.NO_SCROLL_RESET_MS).toBe(30 * 1000);
+  });
+
+  test('IDLE_RESET_MS is 5 minutes', () => {
+    expect(content.IDLE_RESET_MS).toBe(5 * 60 * 1000);
+  });
+
+  test('resetScrollCountDueToNoScroll is callable', () => {
+    expect(() => content.resetScrollCountDueToNoScroll()).not.toThrow();
+  });
+
+  test('initializeDomainData sets domain', () => {
+    content.initializeDomainData();
+    expect(() => content.initializeDomainData()).not.toThrow();
+  });
+
+  test('resetForDomainChange when same domain does nothing', () => {
+    global.window.location = { hostname: 'example.com' };
+    content.initializeDomainData();
+    content.resetForDomainChange();
+    content.resetForDomainChange();
+    expect(() => content.resetForDomainChange()).not.toThrow();
+  });
+
+  afterEach(() => {
+    if (content.clearAllTimeouts) content.clearAllTimeouts();
   });
 });

@@ -7,16 +7,21 @@ let scrollCount = 0;
 let scrollTimestamps = [];
 let lastScrollY = 0;
 let lastActivityTime = Date.now();
-let idleTimeout;
 let currentScrollUnitDistance = 0; // Accumulates scroll distance for the "half page" logic
 let interventionActive = false; // Flag to prevent re-triggering intervention while one is active
 
 // Idle reset after 5 minutes (300,000 ms)
 const IDLE_RESET_MS = 5 * 60 * 1000;
 
+// No-scroll reset: reset count after 30 seconds without scrolling
+const NO_SCROLL_RESET_MS = 30 * 1000;
+
 // Default threshold - will be overridden by settings from background
 let scrollThreshold = 10;
 let timeWindowSeconds = 30;
+let settingsReady = false;
+let idleTimeout;
+let noScrollResetTimeout;
 
 // Factor for what constitutes a "scroll unit" (e.g., 0.5 for half page)
 const SCROLL_UNIT_THRESHOLD_FACTOR = 0.5;
@@ -29,15 +34,15 @@ const SCROLL_RATE_WINDOW_MS = 60000; // 1 minute window for rate calculation
 function initializeDomainData() {
   try {
     currentDomain = window.location.hostname.replace('www.', '');
-    // Reset scroll data for new domain to ensure domain isolation
     scrollCount = 0;
     scrollTimestamps = [];
-    lastScrollY = window.scrollY; // Initialize lastScrollY for the new page
+    lastScrollY = window.scrollY;
     currentScrollUnitDistance = 0;
     lastActivityTime = Date.now();
-    interventionActive = false; // Reset intervention status for new domain
+    interventionActive = false;
+    clearTimeout(noScrollResetTimeout);
+    noScrollResetTimeout = null;
   } catch (e) {
-    // Fallback for edge cases
     currentDomain = 'unknown';
   }
 }
@@ -49,10 +54,12 @@ function resetForDomainChange() {
     currentDomain = newDomain;
     scrollCount = 0;
     scrollTimestamps = [];
-    lastScrollY = window.scrollY; // Initialize lastScrollY for the new page
+    lastScrollY = window.scrollY;
     currentScrollUnitDistance = 0;
     lastActivityTime = Date.now();
-    interventionActive = false; // Reset intervention status for new domain
+    interventionActive = false;
+    clearTimeout(noScrollResetTimeout);
+    noScrollResetTimeout = null;
     setupIdleTimeout();
   }
 }
@@ -77,10 +84,14 @@ function getSettings() {
           scrollThreshold = validateScrollThreshold(settings.scrollThreshold) || 10;
           timeWindowSeconds = validateTimeWindow(settings.timeWindowSeconds) || 30;
         }
+        settingsReady = true;
       });
+    } else {
+      settingsReady = true;
     }
   } catch (e) {
     // Extension context invalidated, use defaults
+    settingsReady = true;
   }
 }
 
@@ -93,6 +104,7 @@ setupIdleTimeout();
 window.addEventListener('load', initializeDomainData);
 window.addEventListener('beforeunload', () => {
   clearTimeout(idleTimeout);
+  clearTimeout(noScrollResetTimeout);
 });
 
 // Update settings when changed
@@ -106,26 +118,42 @@ if (chrome.runtime && chrome.runtime.onMessage) {
       scrollCount = 0;
       scrollTimestamps = [];
       currentScrollUnitDistance = 0;
-      interventionActive = false; // Intervention is no longer active
-      // Reset idle timeout since there's activity
+      interventionActive = false;
+      clearTimeout(noScrollResetTimeout);
+      noScrollResetTimeout = null;
       setupIdleTimeout();
     }
   });
 }
 
-// Helper function to reset scroll count due to idle timeout
+// Helper function to reset scroll count due to idle timeout (5 min)
 function resetScrollCountDueToIdle() {
   scrollCount = 0;
   scrollTimestamps = [];
   currentScrollUnitDistance = 0;
-  // Set up next idle timeout
+  clearTimeout(noScrollResetTimeout);
+  noScrollResetTimeout = null;
   setupIdleTimeout();
+}
+
+// Helper function to reset scroll count after 30s of no scrolling
+function resetScrollCountDueToNoScroll() {
+  scrollCount = 0;
+  scrollTimestamps = [];
+  currentScrollUnitDistance = 0;
+  noScrollResetTimeout = null;
 }
 
 // Helper function to setup idle timeout
 function setupIdleTimeout() {
   clearTimeout(idleTimeout);
   idleTimeout = setTimeout(resetScrollCountDueToIdle, IDLE_RESET_MS);
+}
+
+// Setup 30s no-scroll reset timer (call on each scroll)
+function setupNoScrollResetTimeout() {
+  clearTimeout(noScrollResetTimeout);
+  noScrollResetTimeout = setTimeout(resetScrollCountDueToNoScroll, NO_SCROLL_RESET_MS);
 }
 
 // Helper function to send message with error handling
@@ -205,8 +233,10 @@ function resetScrollRateData() {
 // Single comprehensive scroll event handler
 window.addEventListener('scroll', () => {
   if (interventionActive) {
-    // Do not count scrolls if an intervention is already active
     return;
+  }
+  if (!settingsReady) {
+    return; // Don't count until settings are loaded
   }
 
   const currentTime = Date.now();
@@ -215,8 +245,8 @@ window.addEventListener('scroll', () => {
 
   // Only process if there's actual scroll movement
   if (deltaY > 0) {
-    // Reset idle timeout on any scroll activity
     setupIdleTimeout();
+    setupNoScrollResetTimeout();
 
     // Add timestamp for this scroll event (for time window)
     scrollTimestamps.push(currentTime);
@@ -271,3 +301,24 @@ window.addEventListener('popstate', () => {
   resetForDomainChange();
   resetScrollRateData();
 });
+
+function clearAllTimeouts() {
+  if (typeof idleTimeout !== 'undefined') clearTimeout(idleTimeout);
+  if (typeof noScrollResetTimeout !== 'undefined') clearTimeout(noScrollResetTimeout);
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    validateScrollThreshold,
+    validateTimeWindow,
+    resetScrollCountDueToNoScroll,
+    resetScrollCountDueToIdle,
+    getSettings,
+    initializeDomainData,
+    resetForDomainChange,
+    NO_SCROLL_RESET_MS,
+    IDLE_RESET_MS,
+    setupNoScrollResetTimeout,
+    clearAllTimeouts
+  };
+}
